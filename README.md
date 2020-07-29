@@ -1,3 +1,5 @@
+![](https://i.imgur.com/0ZtHtIn.gif)
+
 # alt:V Resource Installer
 
 A community resource that allows users to easily install resources and ask questions during the installation process, install dependencies, clone the repository, and then handle the responses in their post install script.
@@ -20,7 +22,7 @@ If you get module not found errors. You don't have `13+`.
 npm install -g altv-installer
 ```
 
-## Use with Command Line
+## Install with Command Line
 
 You should be running this in your base server directory where `package.json` is.
 
@@ -29,12 +31,20 @@ If you don't have a package.json do `npm init`.
 Also make sure to create a folder called `resources`.
 
 ```sh
-altv-install <author>/<reponame>
+altv-install i <author>/<reponame>
 ```
 
-ie. `altv-install stuyk/altv-discord-auth`
+ie. `altv-install i stuyk/altv-discord-auth`
 
 If the repo is `NOT` supported it will tell you.
+
+## Remove with Command Line
+
+You should be running this in your base server directory where `package.json` is.
+
+```sh
+altv-install r <author>/<reponame>
+```
 
 <br />
 

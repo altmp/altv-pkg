@@ -1,23 +1,36 @@
 {
     "name": "altv-installer",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "A CLI tool for installing open source resourced and their dependencies.",
     "main": "bin/index.js",
     "author": "stuyk",
     "license": "ISC",
-    "type": "module",
     "bin": {
         "altv-install": "./bin/altv-os-install.js"
     },
     "dependencies": {
         "async-execute": "^1.2.0",
+        "axios": "latest",
         "chalk": "^4.1.0",
-        "node-fetch": "^2.6.0"
+        "commander": "^6.0.0",
+        "cors": "latest",
+        "discord.js": "latest",
+        "dotenv": "latest",
+        "download": "latest",
+        "express": "latest",
+        "node-fetch": "^2.6.0",
+        "pbkdf2": "latest",
+        "rimraf": "^3.0.2",
+        "simplymongo": "latest",
+        "sjcl": "latest"
     },
     "prettier": {
         "tabWidth": 4,
         "semi": true,
         "printWidth": 120,
         "singleQuote": true
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
     }
 }
