@@ -29,8 +29,5 @@
         "semi": true,
         "printWidth": 120,
         "singleQuote": true
-    },
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
     }
 }
