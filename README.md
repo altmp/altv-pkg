@@ -1,19 +1,32 @@
-# alt:V Resource Installer
+<div style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px">
+<font style="font-size: 24px; text-align: right">
+alt:V Resource Installer
+</font>
+<font style="font-size: 14px; padding-top: 13px; text-align: left;">
+An easy to use resource installer for alt:V.
+</font>
+</div>
 
-![](https://i.imgur.com/0ZtHtIn.gif)
+<center>
+<img width="450px" src="https://i.imgur.com/0ZtHtIn.gif" />
+</center>
 
-## Summary
-
+<p>
 A community resource that allows users to easily install resources and ask questions during the installation process, install dependencies, clone the repository, and then handle the responses in their post install script.
 
 This was created to easily install resources from your server's `base` directory.
 
--   Find resources on [alt:V Hub](https://hub.altv.mp)
--   Visit the official [alt:V GTA:V Client Website](https://altv.mp)
--   Check out alt:V's other [repositories](https://github.com/altmp/)
--   Check out my [repositories](https://github.com/stuyk)
+Find resources on [alt:V Hub](https://hub.altv.mp)
+
+Visit the official [alt:V GTA:V Client Website](https://altv.mp)
+
+Check out alt:V's other [repositories](https://github.com/altmp/)
+
+Check out my [repositories](https://github.com/stuyk)
 
 ⭐ This repository if you found it useful!
+
+</p>
 
 # How to Use
 
@@ -131,4 +144,4 @@ https://patreon.com/stuyk
 
 # alt:V Installer Supported Resources
 
-* Make a pull request to append your files to the bottom of this list.
+-   Make a pull request to append your files to the bottom of this list.
