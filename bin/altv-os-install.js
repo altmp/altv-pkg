@@ -4,7 +4,7 @@ const { handleInstall } = require('./options/install');
 const { handleRemove } = require('./options/remove');
 
 // Properties
-program.version('0.0.3');
+program.version('0.0.5');
 program.name('altv-install');
 program.usage('<command> [options]');
 

@@ -1,5 +1,5 @@
 const { verifyPaths } = require('../services/setup');
-const { logDanger, logNormal, logHeader } = require('../services/logging');
+const { logDanger, logNormal, logHeader, logWarning } = require('../services/logging');
 const { fetchJson } = require('../services/fetch');
 const { askQuestion } = require('../services/question');
 
@@ -117,11 +117,16 @@ async function handleInstall(fullRepositoryName) {
     }
 
     if (postInstallInstructions.length >= 1) {
-        logNormal(`Running Post Install Scripts`);
-        for (let i = 0; i < postInstallInstructions.length; i++) {
-            const cmd = postInstallInstructions[i];
-            await execute(cmd, { pipe: true });
-            logNormal(`[${i + 1}/${postInstallInstructions.length}]`);
+        const postWarn = `Warning: We are not responsible for what a post install script does. We ask that you read their install script yourself.`;
+        logWarning(postWarn);
+        const response = askQuestion(`This resource has post install scripts. Did you want to run them? (y/n)`);
+        if (response.toLowerCase().includes('y')) {
+            logNormal(`Running Post Install Scripts`);
+            for (let i = 0; i < postInstallInstructions.length; i++) {
+                const cmd = postInstallInstructions[i];
+                await execute(cmd, { pipe: true });
+                logNormal(`[${i + 1}/${postInstallInstructions.length}]`);
+            }
         }
     }
 
