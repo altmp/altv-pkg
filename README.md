@@ -1,17 +1,11 @@
-<div style="display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px">
-<font style="font-size: 24px; text-align: right">
-alt:V Resource Installer
-</font>
-<font style="font-size: 14px; padding-top: 13px; text-align: left;">
-An easy to use resource installer for alt:V.
-</font>
-</div>
+# alt:V Resource Installer
 
-<center>
-<img width="450px" src="https://i.imgur.com/0ZtHtIn.gif" />
-</center>
+#### An easy to use resource installer for alt:V
 
-<p>
+<p align="center">
+    <img width="500px" height="225" src="https://i.imgur.com/0ZtHtIn.gif" />
+</p>
+
 A community resource that allows users to easily install resources and ask questions during the installation process, install dependencies, clone the repository, and then handle the responses in their post install script.
 
 This was created to easily install resources from your server's `base` directory.
@@ -25,8 +19,6 @@ Check out alt:V's other [repositories](https://github.com/altmp/)
 Check out my [repositories](https://github.com/stuyk)
 
 ⭐ This repository if you found it useful!
-
-</p>
 
 # How to Use
 
