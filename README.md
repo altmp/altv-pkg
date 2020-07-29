@@ -126,3 +126,9 @@ Created by Stuyk (Trevor Wessel)
 https://github.com/sponsors/Stuyk/
 
 https://patreon.com/stuyk
+
+<br />
+
+# alt:V Installer Supported Resources
+
+* Make a pull request to append your files to the bottom of this list.
