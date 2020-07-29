@@ -1,6 +1,6 @@
 {
     "name": "altv-installer",
-    "version": "0.0.3",
+    "version": "0.0.2",
     "description": "A CLI tool for installing open source resourced and their dependencies.",
     "main": "bin/index.js",
     "author": "stuyk",
@@ -12,7 +12,9 @@
         "async-execute": "^1.2.0",
         "axios": "latest",
         "chalk": "^4.1.0",
-        "commander": "^6.0.0"
+        "commander": "^6.0.0",
+        "node-fetch": "^2.6.0",
+        "rimraf": "^3.0.2"
     },
     "prettier": {
         "tabWidth": 4,
