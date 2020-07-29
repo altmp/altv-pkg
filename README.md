@@ -4,7 +4,7 @@ A community resource that allows users to easily install resources and ask quest
 
 This was created to easily install resources from your server's `base` directory.
 
-## Find resources on [alt:V Hub](https://hub.altv.mp)!
+### Find resources on [alt:V Hub](https://hub.altv.mp)!
 
 <br />
 
@@ -35,22 +35,6 @@ altv-install <author>/<reponame>
 ie. `altv-install stuyk/altv-discord-auth`
 
 If the repo is `NOT` supported it will tell you.
-
-<br />
-
-# Author
-
-Created by Stuyk (Trevor Wessel)
-
-❤️ Please support my open source work by donating. I'm here to provide general context for complicated procedures for you new developers. ❤️
-
-https://github.com/sponsors/Stuyk/
-
-❤️ Want direct support for my scripts and tutoring? Check out my Patreon.
-
-https://patreon.com/stuyk
-
-⭐ This repository if you found it useful!
 
 <br />
 
@@ -105,6 +89,22 @@ Here is a baseline example of your `.altv` file could look.
 1. Add `sjcl` to `package.json` dependencies.
 2. Ask the user a question and store the response in `responses.json`
 3. Run a `postinstall` script called `post.js` with NodeJS.
+
+<br />
+
+# Author
+
+Created by Stuyk (Trevor Wessel)
+
+❤️ Please support my open source work by donating. I'm here to provide general context for complicated procedures for you new developers. ❤️
+
+https://github.com/sponsors/Stuyk/
+
+❤️ Want direct support for my scripts and tutoring? Check out my Patreon.
+
+https://patreon.com/stuyk
+
+⭐ This repository if you found it useful!
 
 <br />
 
