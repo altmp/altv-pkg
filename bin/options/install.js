@@ -119,7 +119,7 @@ async function handleInstall(fullRepositoryName) {
     if (postInstallInstructions.length >= 1) {
         const postWarn = `Warning: We are not responsible for what a post install script does. We ask that you read their install script yourself.`;
         logWarning(postWarn);
-        const response = askQuestion(`This resource has post install scripts. Did you want to run them? (y/n)`);
+        const response = await askQuestion(`This resource has post install scripts. Did you want to run them? (y/n)`);
         if (response.toLowerCase().includes('y')) {
             logNormal(`Running Post Install Scripts`);
             for (let i = 0; i < postInstallInstructions.length; i++) {
