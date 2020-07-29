@@ -1,14 +1,19 @@
+# alt:V Resource Installer
+
 ![](https://i.imgur.com/0ZtHtIn.gif)
 
-# alt:V Resource Installer
+## Summary
 
 A community resource that allows users to easily install resources and ask questions during the installation process, install dependencies, clone the repository, and then handle the responses in their post install script.
 
 This was created to easily install resources from your server's `base` directory.
 
-### Find resources on [alt:V Hub](https://hub.altv.mp)!
+-   Find resources on [alt:V Hub](https://hub.altv.mp)
+-   Visit the official [alt:V GTA:V Client Website](https://altv.mp)
+-   Check out alt:V's other [repositories](https://github.com/altmp/)
+-   Check out my [repositories](https://github.com/stuyk)
 
-<br />
+⭐ This repository if you found it useful!
 
 # How to Use
 
@@ -52,6 +57,16 @@ altv-install r <author>/<reponame>
 
 If you wish to add support to your resource for this file. Please add `.altv` file to your repository with installation instructions. You can also specify `[]` inside of your `.altv` file to skip all instructions.
 
+## Use This Badge
+
+Only all the cool devs do it. 😎
+
+[![Generic badge](https://img.shields.io/badge/.altv_Installer%3F-Yes!-4E753E.svg)](https://shields.io/)
+
+```
+[![Generic badge](https://img.shields.io/badge/.altv_Installer%3F-Yes!-4E753E.svg)](https://shields.io/)
+```
+
 ## Instruction Types
 
 ### package
@@ -75,6 +90,8 @@ This file should be located in your repository.
 # Instructions Example
 
 Here is a baseline example of your `.altv` file could look.
+
+Yes, you can have multiple instructions of the same type.
 
 ```json
 [
@@ -106,18 +123,6 @@ Here is a baseline example of your `.altv` file could look.
 
 Created by Stuyk (Trevor Wessel)
 
-❤️ Please support my open source work by donating. I'm here to provide general context for complicated procedures for you new developers. ❤️
-
 https://github.com/sponsors/Stuyk/
 
-❤️ Want direct support for my scripts and tutoring? Check out my Patreon.
-
 https://patreon.com/stuyk
-
-⭐ This repository if you found it useful!
-
-<br />
-
-# Cat Tax
-
-![](https://i.imgur.com/RTeHeQH.jpeg)
