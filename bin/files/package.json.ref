@@ -1,0 +1,17 @@
+{
+    "name": "altv-pkg server",
+    "version": "0.0.0",
+    "description": "Don't worry we made this package.json for you.",
+    "main": "index.js",
+    "scripts": {
+        "update": "altv-pkg d release"
+    },
+    "author": "stuyk",
+    "type": "module",
+    "prettier": {
+        "printWidth": 120,
+        "tabWidth": 4,
+        "singleQuote": true,
+        "bracketSpacing": true
+    }
+}

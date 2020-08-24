@@ -2,10 +2,11 @@
 const program = require('commander');
 const { handleInstall } = require('./options/install');
 const { handleRemove } = require('./options/remove');
+const { handleDownload } = require('./options/download');
 
 // Properties
-program.version('0.0.6');
-program.name('altv-install');
+program.version('1.0.0');
+program.name('altv-pkg');
 program.usage('<command> [options]');
 
 // Options
@@ -20,6 +21,12 @@ program
     .alias('r')
     .description('Remove an alt:V resource from local installation.')
     .action(handleRemove);
+
+program
+    .command(`download <branch>`)
+    .alias('d')
+    .description('Install alt:V server framework from CDN.')
+    .action(handleDownload);
 
 // Parse Args.
 program.parse(process.argv);

@@ -29,7 +29,7 @@ Make sure to get `NodeJS` Version `13+`.
 If you get module not found errors. You don't have `13+`.
 
 ```sh
-npm install -g altv-installer
+npm install -g altv-pkg
 ```
 
 ## Install with Command Line
@@ -41,10 +41,10 @@ If you don't have a package.json do `npm init`.
 Also make sure to create a folder called `resources`.
 
 ```sh
-altv-install i <author>/<reponame>
+altv-pkg i <author>/<reponame>
 ```
 
-ie. `altv-install i stuyk/altv-discord-auth`
+ie. `altv-pkg i stuyk/altv-discord-auth`
 
 If the repo is `NOT` supported it will tell you.
 
@@ -53,7 +53,7 @@ If the repo is `NOT` supported it will tell you.
 You should be running this in your base server directory where `package.json` is.
 
 ```sh
-altv-install r <author>/<reponame>
+altv-pkg r <author>/<reponame>
 ```
 
 <br />

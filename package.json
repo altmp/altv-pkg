@@ -1,18 +1,19 @@
 {
-    "name": "altv-installer",
-    "version": "0.0.6",
+    "name": "altv-pkg",
+    "version": "1.0.0",
     "description": "A CLI tool for installing open source resourced and their dependencies.",
     "main": "bin/index.js",
     "author": "stuyk",
     "license": "ISC",
     "bin": {
-        "altv-install": "./bin/altv-os-install.js"
+        "altv-pkg": "./bin/altv-pkg.js"
     },
     "dependencies": {
         "async-execute": "^1.2.0",
         "axios": "latest",
         "chalk": "^4.1.0",
         "commander": "^6.0.0",
+        "download": "^8.0.0",
         "node-fetch": "^2.6.0",
         "rimraf": "^3.0.2"
     },
