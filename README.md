@@ -1,10 +1,12 @@
 # alt:V Resource Installer
 
+<p align="center">
+    <img width="600px" height="175" src="https://thumbs.gfycat.com/MildSecondhandIndigobunting-size_restricted.gif" />
+</p>
+
 #### An easy to use resource installer for alt:V
 
-<p align="center">
-    <img width="500px" height="225" src="https://i.imgur.com/0ZtHtIn.gif" />
-</p>
+---
 
 A community resource that allows users to easily install resources and ask questions during the installation process, install dependencies, clone the repository, and then handle the responses in their post install script.
 
@@ -31,6 +33,16 @@ If you get module not found errors. You don't have `13+`.
 ```sh
 npm install -g altv-pkg
 ```
+
+## Download Server Files with Command Line
+
+You should be running this in a directory with existing server files or where you want to download the alt:V Server Framework for JavaScript.
+
+```sh
+altv-pkg d <branch_name>
+```
+
+ie. `altv-pkg d release`
 
 ## Install with Command Line
 
@@ -66,10 +78,10 @@ If you wish to add support to your resource for this file. Please add `.altv` fi
 
 Only all the cool devs do it. 😎
 
-[![Generic badge](https://img.shields.io/badge/.altv_Installer%3F-Yes!-4E753E.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/.altv_pkg_support-Yes!-4E753E.svg)](https://shields.io/)
 
 ```
-[![Generic badge](https://img.shields.io/badge/.altv_Installer%3F-Yes!-4E753E.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/.altv_pkg_support-Yes!-4E753E.svg)](https://shields.io/)
 ```
 
 ## Instruction Types
