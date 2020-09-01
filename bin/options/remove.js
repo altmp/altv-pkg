@@ -26,7 +26,7 @@ function handleRemove(fullRepositoryName) {
     });
 
     logNormal(`Successfully removed ${repoName}`);
-    process.exit(1);
+    process.exit(0);
 }
 
 module.exports = {
