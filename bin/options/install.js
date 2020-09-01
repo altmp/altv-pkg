@@ -133,7 +133,7 @@ async function handleInstall(fullRepositoryName) {
     logNormal(`Updating Installation`);
     await execute(`npm install`, { pipe: true });
     logHeader(`Add '${repoName}' to your 'server.cfg' file in your 'resources' section. Goodbye!`);
-    process.exit(1);
+    process.exit(0);
 }
 
 module.exports = {
