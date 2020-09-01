@@ -22,5 +22,15 @@
         "semi": true,
         "printWidth": 120,
         "singleQuote": true
-    }
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Stuyk/altv-pkg.git"
+    },
+    "keywords": [
+        "altv",
+        "cli",
+        "tool",
+        "alt:V"
+    ]
 }
