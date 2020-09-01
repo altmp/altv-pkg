@@ -5,7 +5,7 @@ const { handleRemove } = require('./options/remove');
 const { handleDownload } = require('./options/download');
 
 // Properties
-program.version('1.0.0');
+program.version('1.0.2');
 program.name('altv-pkg');
 program.usage('<command> [options]');
 
