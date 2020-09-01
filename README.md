@@ -1,7 +1,7 @@
-# alt:V Resource Installer
+# alt:V PKG
 
 <p align="center">
-    <img width="600px" height="175" src="https://thumbs.gfycat.com/MildSecondhandIndigobunting-size_restricted.gif" />
+    <img width="500px" src="https://thumbs.gfycat.com/MildSecondhandIndigobunting-size_restricted.gif" />
 </p>
 
 #### An easy to use resource installer for alt:V
