@@ -1,6 +1,6 @@
 {
     "name": "altv-pkg",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A CLI tool for installing open source resourced and their dependencies.",
     "main": "bin/index.js",
     "author": "stuyk",
