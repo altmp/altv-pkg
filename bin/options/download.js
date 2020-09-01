@@ -184,7 +184,7 @@ async function handleDownload(branch) {
         logNormal(`Use: 'altv-server.exe' to start your server! Powershell: './altv-server.exe'`);
     }
 
-    process.exit(1);
+    process.exit(0);
 }
 
 module.exports = {
