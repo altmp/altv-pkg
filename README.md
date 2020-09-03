@@ -34,6 +34,18 @@ If you get module not found errors. You don't have `13+`.
 npm install -g altv-pkg
 ```
 
+**Powershell Users**
+
+If you have issues running the altv-pkg command.
+
+Simply run the following to unblock powershell from running scripts.
+
+Ensure you use powershell with **administrative** permission.
+
+```
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force;
+```
+
 ## Download Server Files with Command Line
 
 You should be running this in a directory with existing server files or where you want to download the alt:V Server Framework for JavaScript.
