@@ -12,13 +12,13 @@ A community resource that allows users to easily install resources and ask quest
 
 This was created to easily install resources from your server's `base` directory.
 
-Find resources on [alt:V Hub](https://hub.altv.mp)
+[Find resources on alt:V Hub](https://hub.altv.mp)
 
-Visit the official [alt:V GTA:V Client Website](https://altv.mp)
+[Visit the official alt:V GTA:V Client Website](https://altv.mp)
 
-Check out alt:V's other [repositories](https://github.com/altmp/)
+[❤️ Become a Sponsor of my Open Source Work](https://github.com/sponsors/Stuyk/)
 
-Check out my [repositories](https://github.com/stuyk)
+[⌨️ Learn how to script for alt:V](https://stuyk.github.io/altv-javascript-guide/)
 
 ⭐ This repository if you found it useful!
 
