@@ -4,11 +4,11 @@ const { logDanger } = require('./logging');
 
 const pathsToCheck = [
     {
-        fullPath: path.join('./', 'package.json'),
+        fullPath: 'package.json',
         error: `Could not find package.json in local directory. Initialize your directory with 'npm init' to continue.`,
     },
     {
-        fullPath: path.join('./', 'altv-server'),
+        fullPath: 'altv-server',
         error: `Could not find 'altv-server' in local directory. Please download alt:V Server files first.`,
     },
 ];
@@ -20,10 +20,13 @@ function verifyPaths() {
         fs.mkdirSync(resourcesPath);
     }
 
+    const files = fs.readdirSync('.');
+
     for (let i = 0; i < pathsToCheck.length; i++) {
         const pathData = pathsToCheck[i];
-        if (!fs.existsSync(pathData.fullPath)) {
-            logDanger(pathData.error);
+        const matchIndex = files.findIndex((file) => file.includes(pathData.fullPath));
+
+        if (matchIndex <= -1) {
             return false;
         }
     }
