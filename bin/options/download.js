@@ -112,7 +112,7 @@ async function handleDownload(branch) {
     const serverPath = path.join('./', 'server.cfg');
     if (!existsSync(serverPath)) {
         const response = await askQuestion(`Using voice? [y/N]`);
-        if (response.includes('n') || !response) {
+        if (!response || response.includes('n')) {
             const configFilePath = path.join(__dirname, '../files/server.cfg');
             copyFileSync(configFilePath, serverPath);
         } else {
