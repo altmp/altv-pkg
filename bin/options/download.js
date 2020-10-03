@@ -132,7 +132,7 @@ async function handleDownload(branch) {
     if (!existsSync(resourcesPath)) {
         mkdirSync(resourcesPath);
         const response = await askQuestion(`Generate example resource? [y/N]`);
-        if (response.includes('y')) {
+        if (response && response.includes('y')) {
             const examplePath = path.join('./resources', 'example');
             const clientResPath = path.join(examplePath, 'client');
             const serverResPath = path.join(examplePath, 'server');
