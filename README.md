@@ -18,7 +18,7 @@ This was created to easily install resources from your server's `base` directory
 
 [❤️ Become a Sponsor of my Open Source Work](https://github.com/sponsors/Stuyk/)
 
-[⌨️ Learn how to script for alt:V](https://stuyk.github.io/altv-javascript-guide/)
+[⌨️ Learn how to script for alt:V](https://altv.stuyk.com/)
 
 ⭐ This repository if you found it useful!
 
