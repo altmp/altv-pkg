@@ -32,6 +32,18 @@ const downloadURLS = {
             url: `https://cdn.altv.mp/server/%_%/x64_win32/data/vehmods.bin`,
             destination: './data',
         },
+        {
+            url: `https://cdn.altv.mp/coreclr-module/%_%/x64_win32/AltV.Net.Host.dll`,
+            destination: '.',
+        },
+        {
+            url: `https://cdn.altv.mp/coreclr-module/%_%/x64_win32/AltV.Net.Host.runtimeconfig.json`,
+            destination: '.',
+        },
+        {
+            url: `https://cdn.altv.mp/coreclr-module/%_%/x64_win32/modules/csharp-module.dll`,
+            destination: './modules',
+        }
     ],
     linux: [
         {
@@ -62,6 +74,18 @@ const downloadURLS = {
             url: `https://cdn.altv.mp/others/start.sh`,
             destination: '.',
         },
+        {
+            url: `https://cdn.altv.mp/coreclr-module/%_%/x64_linux/AltV.Net.Host.dll`,
+            destination: '.',
+        },
+        {
+            url: `https://cdn.altv.mp/coreclr-module/%_%/x64_linux/AltV.Net.Host.runtimeconfig.json`,
+            destination: '.',
+        },
+        {
+            url: `https://cdn.altv.mp/coreclr-module/%_%/x64_linux/modules/libcsharp-module.so`,
+            destination: './modules',
+        }
     ],
 };
 
