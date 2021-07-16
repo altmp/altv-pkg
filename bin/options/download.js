@@ -29,6 +29,10 @@ const downloadURLS = {
             destination: './data',
         },
         {
+            url: `https://cdn.altv.mp/server/%_%/x64_win32/data/clothes.bin`,
+            destination: './data',
+        },
+        {
             url: `https://cdn.altv.mp/server/%_%/x64_win32/data/vehmods.bin`,
             destination: './data',
         },
@@ -43,7 +47,7 @@ const downloadURLS = {
             destination: './modules',
         },
         {
-            url: `https://cdn.altv.mp/js-module/%_%/x64_linux/modules/js-module/libnode.so.72`,
+            url: `https://cdn.altv.mp/js-module/%_%/x64_linux/modules/js-module/libnode.so.83`,
             destination: '.',
         },
         {
@@ -56,6 +60,10 @@ const downloadURLS = {
         },
         {
             url: `https://cdn.altv.mp/server/%_%/x64_linux/data/vehmods.bin`,
+            destination: './data',
+        },
+        {
+            url: `https://cdn.altv.mp/server/%_%/x64_linux/data/clothes.bin`,
             destination: './data',
         },
         {
