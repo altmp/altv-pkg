@@ -36,6 +36,10 @@ const downloadURLS = {
             url: `https://cdn.altv.mp/server/%_%/x64_win32/data/vehmods.bin`,
             destination: './data',
         },
+        {
+            url: `https://cdn.altv.mp/server/%_%/x64_win32/data/clothes.bin`,
+            destination: './data',
+        },
     ],
     linux: [
         {
