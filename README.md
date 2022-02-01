@@ -161,3 +161,7 @@ https://patreon.com/stuyk
 # alt:V Installer Supported Resources
 
 -   Make a pull request to append your files to the bottom of this list.
+
+# Additional Credits
+
+Original idea by [https://github.com/vanessa](https://github.com/vanessa) for downloading resources / installing / removing them.
