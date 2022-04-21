@@ -40,18 +40,26 @@ async function start() {
     console.log(chalk.whiteBright(`System: `), chalk.yellowBright(platform));
     console.log(chalk.whiteBright(`Branch: `), chalk.yellowBright(branch));
 
-    const binaryDownload = platform === 'x64_linux' ? `https://cdn.altv.mp/server/${branch}/x64_linux/altv-server` : `https://cdn.altv.mp/server/${branch}/x64_win32/altv-server.exe`;
-
-    const altvFiles = {
-        // alt:V data files
+    const linuxFiles = {
         'data/vehmodels.bin': `https://cdn.altv.mp/data/${branch}/data/vehmodels.bin`,
         'data/vehmods.bin': `https://cdn.altv.mp/data/${branch}/data/vehmods.bin`,
         'data/clothes.bin': `https://cdn.altv.mp/data/${branch}/data/clothes.bin`,
+        'modules/libjs-module.so': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libjs-module.so`,
+        'libnode.so.83': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libnode.so.83`,
+        'start.sh': `https://cdn.altv.mp/others/start.sh`,
+        'altv-server': `https://cdn.altv.mp/server/${branch}/x64_linux/altv-server`,
+    }
 
-        // alt:V modules
+    const windowsFiles = {
+        'data/vehmodels.bin': `https://cdn.altv.mp/data/${branch}/data/vehmodels.bin`,
+        'data/vehmods.bin': `https://cdn.altv.mp/data/${branch}/data/vehmods.bin`,
+        'data/clothes.bin': `https://cdn.altv.mp/data/${branch}/data/clothes.bin`,
         'modules/js-module.dll': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/js-module.dll`,
         'libnode.dll': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libnode.dll`,
+        'altv-server.exe': `https://cdn.altv.mp/server/${branch}/${platform}/altv-server.exe`,
     };
+
+    const filesToUse = platform == 'x64_win32' ? windowsFiles : linuxFiles;
 
     if (!fs.existsSync(path.join(rootPath, 'data'))) {
         fs.mkdirSync(path.join(rootPath, 'data'));
@@ -63,7 +71,7 @@ async function start() {
 
     let promises = [];
     console.log(chalk.greenBright('===== Download ====='));
-    for (const [file, url] of Object.entries(altvFiles)) {
+    for (const [file, url] of Object.entries(filesToUse)) {
         console.log(chalk.whiteBright(`${file}`))
         const promise = new Promise((resolve) => {
             axios.get(url, { responseType: 'arraybuffer' }).then(response => {
@@ -77,21 +85,6 @@ async function start() {
 
         promises.push(promise);
     }
-
-    const binaryPathing = binaryDownload.split('/');
-    const binaryFileName = binaryPathing[binaryPathing.length - 1];
-
-    const promise = new Promise((resolve) => {
-        axios.get(binaryDownload, { responseType: 'arraybuffer' }).then(response => {
-            console.log(chalk.whiteBright(`${binaryFileName}`))
-            fs.writeFileSync(path.join(rootPath, binaryFileName), response.data);
-            resolve();
-        }).catch(error => {
-            console.error(`Failed to download ${binaryFileName}: ${error}`);
-            resolve();
-        })
-    });
-    promises.push(promise);
 
     await Promise.all(promises);
     console.log(chalk.greenBright('===== Complete ====='));
