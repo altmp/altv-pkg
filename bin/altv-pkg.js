@@ -1,28 +1,39 @@
 #!/usr/bin/env node
-const yargs = require('yargs/yargs')();
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const chalk = require('chalk');
 
+const args = process.argv
 const platform = process.platform == 'win32' ? 'x64_win32' : 'x64_linux';
 const rootPath = process.cwd();
 
-let branch = 'release'
+let branch = null;
 
-yargs.usage(`Usage: altv-pkg [release/rc/dev]`)
 
-yargs.command('release', 'Download altest release files', { alias: 'd' }, () => {
-    branch = 'release';
-});
 
-yargs.command('rc', 'Download altest rc files', { alias: 'rc' }, () => {
-    branch = 'rc';
-});
+for (let i = 0; i < args.length; i++) {
+    if (args[i] === 'release') {
+        branch = 'release';
+        break;
+    }
 
-yargs.command('dev', 'Download altest dev files', { alias: 'dev' }, () => {
-    branch = 'dev';
-});
+    if (args[i] === 'rc') {
+        branch = 'rc';
+        break;
+    }
+
+    if (args[i] === 'dev') {
+        branch = 'dev';
+        break;
+    }
+}
+
+if (!branch) {
+    console.log(chalk.redBright('Please specify a branch: release, rc, or dev. \r\nExample:\r'));
+    console.log(chalk.green('npx altv-pkg release'));
+    process.exit(0)
+}
 
 async function start() {
     console.log(chalk.greenBright('===== altv-pkg ====='));
@@ -84,10 +95,6 @@ async function start() {
 
     await Promise.all(promises);
     console.log(chalk.greenBright('===== Complete ====='));
-
 }
 
 start();
-
-
-

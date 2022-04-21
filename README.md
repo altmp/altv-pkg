@@ -1,5 +1,7 @@
 # altv-pkg
 
+![](https://i.imgur.com/XgO9FzQ.png)
+
 Download server binaries quickly and easily for [alt:V Servers](https://altv.mp).
 
 | Usage              | Description                      |

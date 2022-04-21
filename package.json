@@ -1,6 +1,6 @@
 {
     "name": "altv-pkg",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Install alt:V Binaries Quickly",
     "main": "bin/index.js",
     "author": "stuyk",
@@ -10,8 +10,7 @@
     },
     "dependencies": {
         "axios": "^0.26.1",
-        "chalk": "^4.1.0",
-        "yargs": "^17.4.1"
+        "chalk": "^4.1.0"
     },
     "prettier": {
         "tabWidth": 4,
