@@ -1,7 +1,7 @@
 {
     "name": "altv-pkg",
-    "version": "1.2.0",
-    "description": "A CLI tool for installing open source resourced and their dependencies.",
+    "version": "2.0.0",
+    "description": "Install alt:V Binaries Quickly",
     "main": "bin/index.js",
     "author": "stuyk",
     "license": "ISC",
@@ -9,13 +9,9 @@
         "altv-pkg": "./bin/altv-pkg.js"
     },
     "dependencies": {
-        "async-execute": "^1.2.0",
-        "axios": "latest",
+        "axios": "^0.26.1",
         "chalk": "^4.1.0",
-        "commander": "^6.0.0",
-        "download": "^6.2.5",
-        "node-fetch": "^2.6.0",
-        "rimraf": "^3.0.2"
+        "yargs": "^17.4.1"
     },
     "prettier": {
         "tabWidth": 4,
