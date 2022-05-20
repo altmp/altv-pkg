@@ -45,7 +45,7 @@ async function start() {
         'data/vehmods.bin': `https://cdn.altv.mp/data/${branch}/data/vehmods.bin`,
         'data/clothes.bin': `https://cdn.altv.mp/data/${branch}/data/clothes.bin`,
         'modules/libjs-module.so': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libjs-module.so`,
-        'libnode.so.83': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libnode.so.83`,
+        'libnode.so.102': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libnode.so.102`,
         'start.sh': `https://cdn.altv.mp/others/start.sh`,
         'altv-server': `https://cdn.altv.mp/server/${branch}/x64_linux/altv-server`,
     }
