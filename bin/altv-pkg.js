@@ -62,19 +62,19 @@ async function start() {
 
     const sharedUpdates = [
         `https://cdn.altv.mp/data/${branch}/update.json`,
-    ]
+    ];
 
     const linuxUpdates = [
         ...sharedUpdates,
         `https://cdn.altv.mp/server/${branch}/x64_linux/update.json`,
         `https://cdn.altv.mp/js-module/${branch}/x64_linux/update.json`,
-    ]
+    ];
 
     const windowsUpdates = [
         ...sharedUpdates,
         `https://cdn.altv.mp/server/${branch}/x64_win32/update.json`,
         `https://cdn.altv.mp/js-module/${branch}/x64_win32/update.json`,
-    ]
+    ];
 
     const [filesUpdate, filesToUse] = (platform == 'x64_win32')
         ? [windowsUpdates, windowsFiles]
@@ -160,15 +160,13 @@ async function start() {
 }
 
 function getLocalFileHash(file) {
-    let fileBuffer
+    let fileBuffer;
     try {
         fileBuffer = fs.readFileSync(path.join(rootPath, file));
-    } catch (e) {
+    } catch {
         return '_';
     }
-    const hashSum = crypto.createHash('sha1');
-
-    return hashSum.update(fileBuffer).digest('hex');
+    return crypto.createHash('sha1').update(fileBuffer).digest('hex');
 }
 
 // I dont't know why altv-pkg has different file paths than alt:V cdn
@@ -177,9 +175,10 @@ const pathsCorrects = {
     'modules/js-module/libnode.dll': 'libnode.dll',
     'modules/js-module/libjs-module.so': 'modules/libjs-module.so',
     'modules/js-module/libnode.so.102': 'libnode.so.102',
-}
+};
+
 function correctPathIfNecessary(file) {
-    return pathsCorrects[file] ?? file
+    return pathsCorrects[file] ?? file;
 }
 
 start();
