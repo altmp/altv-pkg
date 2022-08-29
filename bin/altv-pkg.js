@@ -48,6 +48,7 @@ async function start() {
     const linuxFiles = {
         ...sharedFiles,
         'modules/libjs-module.so': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libjs-module.so`,
+        'modules/libjs-bytecode-module.so': `https://cdn.altv.mp/js-bytecode-module/${branch}/${platform}/modules/libjs-bytecode-module.so`,
         'libnode.so.102': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libnode.so.102`,
         'start.sh': `https://cdn.altv.mp/others/start.sh`,
         'altv-server': `https://cdn.altv.mp/server/${branch}/x64_linux/altv-server`,
@@ -56,6 +57,7 @@ async function start() {
     const windowsFiles = {
         ...sharedFiles,
         'modules/js-module.dll': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/js-module.dll`,
+        'modules/js-bytecode-module.dll': `https://cdn.altv.mp/js-bytecode-module/${branch}/${platform}/modules/js-bytecode-module.dll`,
         'libnode.dll': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libnode.dll`,
         'altv-server.exe': `https://cdn.altv.mp/server/${branch}/${platform}/altv-server.exe`,
     };
@@ -68,12 +70,14 @@ async function start() {
         ...sharedUpdates,
         `https://cdn.altv.mp/server/${branch}/x64_linux/update.json`,
         `https://cdn.altv.mp/js-module/${branch}/x64_linux/update.json`,
+        `https://cdn.altv.mp/js-bytecode-module/${branch}/x64_linux/update.json`,
     ];
 
     const windowsUpdates = [
         ...sharedUpdates,
         `https://cdn.altv.mp/server/${branch}/x64_win32/update.json`,
         `https://cdn.altv.mp/js-module/${branch}/x64_win32/update.json`,
+        `https://cdn.altv.mp/js-bytecode-module/${branch}/x64_win32/update.json`,
     ];
 
     const [filesUpdate, filesToUse] = (platform == 'x64_win32')
