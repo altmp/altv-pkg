@@ -22,4 +22,11 @@ npm i --save-dev altv-pkg
 npx altv-pkg release
 ```
 
+## Configuration
+Create a `.altvpkgrc.json` file in your root directory and add the following JSON code.
 
+```
+{
+    "loadBytecodeModule": true
+}
+```
