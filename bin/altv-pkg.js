@@ -71,7 +71,6 @@ async function start() {
         ...sharedUpdates,
         `https://cdn.altv.mp/server/${branch}/x64_linux/update.json`,
         `https://cdn.altv.mp/js-module/${branch}/x64_linux/update.json`,
-        `https://cdn.altv.mp/js-bytecode-module/${branch}/x64_linux/update.json`,
     ];
 
     const windowsUpdates = [
