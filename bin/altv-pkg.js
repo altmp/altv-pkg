@@ -43,6 +43,7 @@ async function start() {
         'data/vehmodels.bin': `https://cdn.altv.mp/data/${branch}/data/vehmodels.bin`,
         'data/vehmods.bin': `https://cdn.altv.mp/data/${branch}/data/vehmods.bin`,
         'data/clothes.bin': `https://cdn.altv.mp/data/${branch}/data/clothes.bin`,
+        'data/pedmodels.bin': `https://cdn.altv.mp/data/${branch}/data/pedmodels.bin`,
     };
 
     const linuxFiles = {
@@ -98,15 +99,15 @@ async function start() {
         const promise = new Promise((resolve, reject) => {
             axios.get(url, { responseType: 'json' }).then(({ data: {
                 hashList
-            }}) => {
+            } }) => {
                 for (let [file, hash] of Object.entries(hashList)) {
                     file = correctPathIfNecessary(file);
-                    
+
                     if (getLocalFileHash(file) === hash) {
                         console.log(chalk.cyanBright('✓'), chalk.whiteBright(file));
                         continue;
                     }
-                    
+
                     console.log(chalk.redBright('x'), chalk.whiteBright(file));
 
                     if (anyHashRejected) return;
@@ -146,13 +147,16 @@ async function start() {
                     resolve();
                 }).catch(error => {
                     console.error(chalk.redBright(`Failed to download ${file}: ${error}`));
+                    if (file.includes('.bin')) {
+                        console.log(`File may only be available in another branch. Can be safely ignored`)
+                    }
                     resolve();
                 });
             });
-    
+
             promises.push(promise);
         }
-    
+
         await Promise.all(promises);
     }
 
