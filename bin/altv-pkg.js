@@ -5,11 +5,14 @@ const axios = require('axios');
 const chalk = require('chalk');
 const crypto = require('crypto');
 
+const RC_FILE_NAME = ".altvpkgrc.json"
+
 const args = process.argv
 const platform = process.platform == 'win32' ? 'x64_win32' : 'x64_linux';
 const rootPath = process.cwd();
 
 let branch = null;
+const { loadBytecodeModule } = loadRuntimeConfig();
 
 for (let i = 0; i < args.length; i++) {
     if (args[i] === 'release') {
@@ -76,6 +79,14 @@ async function start() {
         `https://cdn.altv.mp/server/${branch}/x64_win32/update.json`,
         `https://cdn.altv.mp/js-module/${branch}/x64_win32/update.json`,
     ];
+
+    if(loadBytecodeModule) {
+        linuxFiles['modules/libjs-bytecode-module.so'] = `https://cdn.altv.mp/js-bytecode-module/${branch}/${platform}/modules/libjs-bytecode-module.so`;
+        windowsFiles['modules/js-bytecode-module.dll'] = `https://cdn.altv.mp/js-bytecode-module/${branch}/${platform}/modules/js-bytecode-module.dll`;
+
+        linuxUpdates.push(`https://cdn.altv.mp/js-bytecode-module/${branch}/x64_linux/update.json`)
+        windowsUpdates.push(`https://cdn.altv.mp/js-bytecode-module/${branch}/x64_win32/update.json`);
+    }
 
     const [filesUpdate, filesToUse] = (platform == 'x64_win32')
         ? [windowsUpdates, windowsFiles]
@@ -183,6 +194,21 @@ const pathsCorrects = {
 
 function correctPathIfNecessary(file) {
     return pathsCorrects[file] ?? file;
+}
+
+function loadRuntimeConfig() {
+    let loadBytecodeModule = false;
+
+    try {
+        const data = fs.readFileSync(`./${RC_FILE_NAME}`, { encoding: 'utf8' });
+        const parsedData = JSON.parse(data);
+
+        loadBytecodeModule = !!parsedData.loadBytecodeModule;
+    } catch (e) {
+        console.log(chalk.gray(`Configuration file '${RC_FILE_NAME}' could not be read. Continuing without...`));
+    }
+
+    return { loadBytecodeModule };
 }
 
 start();
