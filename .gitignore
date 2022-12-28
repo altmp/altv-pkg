@@ -5,3 +5,7 @@ altv-server.exe
 modules/
 data/
 libnode.dll
+AltV.Net.Host*
+server.log
+server.toml
+.altvpkgrc.json
