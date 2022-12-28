@@ -12,7 +12,7 @@ const platform = process.platform == 'win32' ? 'x64_win32' : 'x64_linux';
 const rootPath = process.cwd();
 
 let branch = null;
-const { loadBytecodeModule } = loadRuntimeConfig();
+const { loadBytecodeModule, loadCSharpModule } = loadRuntimeConfig();
 
 for (let i = 0; i < args.length; i++) {
     if (args[i] === 'release') {
@@ -80,12 +80,29 @@ async function start() {
         `https://cdn.altv.mp/js-module/${branch}/x64_win32/update.json`,
     ];
 
-    if(loadBytecodeModule) {
+    if (loadBytecodeModule) {
         linuxFiles['modules/libjs-bytecode-module.so'] = `https://cdn.altv.mp/js-bytecode-module/${branch}/${platform}/modules/libjs-bytecode-module.so`;
         windowsFiles['modules/js-bytecode-module.dll'] = `https://cdn.altv.mp/js-bytecode-module/${branch}/${platform}/modules/js-bytecode-module.dll`;
 
         linuxUpdates.push(`https://cdn.altv.mp/js-bytecode-module/${branch}/x64_linux/update.json`)
         windowsUpdates.push(`https://cdn.altv.mp/js-bytecode-module/${branch}/x64_win32/update.json`);
+    }
+
+    if (loadCSharpModule) {
+
+        linuxFiles['AltV.Net.Host.dll'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/AltV.Net.Host.dll`;
+        linuxFiles['AltV.Net.Host.runtimeconfig.json'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/AltV.Net.Host.runtimeconfig.json`;
+
+        linuxFiles['modules/libcsharp-module.so'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/modules/libcsharp-module.so`;
+
+        windowsFiles['AltV.Net.Host.dll'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/AltV.Net.Host.dll`;
+        windowsFiles['AltV.Net.Host.runtimeconfig.json'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/AltV.Net.Host.runtimeconfig.json`;
+
+        windowsFiles['modules/csharp-module.dll'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/modules/csharp-module.dll`;
+        windowsFiles['modules/csharp-module.pdb'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/modules/csharp-module.pdb`;
+
+        linuxUpdates.push(`https://cdn.altv.mp/coreclr-module/${branch}/x64_linux/update.json`);
+        windowsUpdates.push(`https://cdn.altv.mp/coreclr-module/${branch}/x64_win32/update.json`);
     }
 
     const [filesUpdate, filesToUse] = (platform == 'x64_win32')
@@ -147,10 +164,16 @@ async function start() {
         filesToDownload = filesToUse;
     }
 
+    const shouldIncludeRuntimeConfig = !fs.existsSync('AltV.Net.Host.runtimeconfig.json') && loadCSharpModule;
+
     if (Object.keys(filesToDownload).length) {
         promises = [];
         console.log(chalk.greenBright('===== Download ====='));
         for (const [file, url] of Object.entries(filesToDownload)) {
+            // Avoid overwriting existing runtimeconfig.json file
+            if (file == "AltV.Net.Host.runtimeconfig.json" && !shouldIncludeRuntimeConfig)
+                continue;
+
             console.log(chalk.whiteBright(`${file}`));
             const promise = new Promise((resolve) => {
                 axios.get(url, { responseType: 'arraybuffer' }).then(response => {
@@ -198,17 +221,19 @@ function correctPathIfNecessary(file) {
 
 function loadRuntimeConfig() {
     let loadBytecodeModule = false;
+    let loadCSharpModule = false;
 
     try {
         const data = fs.readFileSync(`./${RC_FILE_NAME}`, { encoding: 'utf8' });
         const parsedData = JSON.parse(data);
 
         loadBytecodeModule = !!parsedData.loadBytecodeModule;
+        loadCSharpModule = !!parsedData.loadCSharpModule;
     } catch (e) {
         console.log(chalk.gray(`Configuration file '${RC_FILE_NAME}' could not be read. Continuing without...`));
     }
 
-    return { loadBytecodeModule };
+    return { loadBytecodeModule, loadCSharpModule };
 }
 
 start();
