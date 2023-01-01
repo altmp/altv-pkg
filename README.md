@@ -27,6 +27,7 @@ Create a `.altvpkgrc.json` file in your root directory and add the following JSO
 
 ```
 {
-    "loadBytecodeModule": true
+    "loadBytecodeModule": true,
+    "loadCSharpModule": true
 }
 ```
