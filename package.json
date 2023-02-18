@@ -1,6 +1,6 @@
 {
     "name": "altv-pkg",
-    "version": "2.0.8",
+    "version": "2.0.9",
     "description": "Install alt:V Binaries Quickly",
     "main": "bin/index.js",
     "author": "stuyk",
