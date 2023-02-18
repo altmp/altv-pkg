@@ -5,9 +5,10 @@ const axios = require('axios');
 const chalk = require('chalk');
 const crypto = require('crypto');
 
-const RC_FILE_NAME = ".altvpkgrc.json"
+const RC_FILE_NAME = ".altvpkgrc.json";
+const CDN_ADDRESS = "cdn.alt-mp.com";
 
-const args = process.argv
+const args = process.argv;
 const platform = process.platform == 'win32' ? 'x64_win32' : 'x64_linux';
 const rootPath = process.cwd();
 
@@ -43,66 +44,66 @@ async function start() {
     console.log(chalk.whiteBright(`Branch: `), chalk.yellowBright(branch));
 
     const sharedFiles = {
-        'data/vehmodels.bin': `https://cdn.altv.mp/data/${branch}/data/vehmodels.bin`,
-        'data/vehmods.bin': `https://cdn.altv.mp/data/${branch}/data/vehmods.bin`,
-        'data/clothes.bin': `https://cdn.altv.mp/data/${branch}/data/clothes.bin`,
-        'data/pedmodels.bin': `https://cdn.altv.mp/data/${branch}/data/pedmodels.bin`,
+        'data/vehmodels.bin': `https://${CDN_ADDRESS}/data/${branch}/data/vehmodels.bin`,
+        'data/vehmods.bin': `https://${CDN_ADDRESS}/data/${branch}/data/vehmods.bin`,
+        'data/clothes.bin': `https://${CDN_ADDRESS}/data/${branch}/data/clothes.bin`,
+        'data/pedmodels.bin': `https://${CDN_ADDRESS}/data/${branch}/data/pedmodels.bin`,
     };
 
     const linuxFiles = {
         ...sharedFiles,
-        'modules/libjs-module.so': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libjs-module.so`,
-        'libnode.so.102': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libnode.so.102`,
-        'start.sh': `https://cdn.altv.mp/others/start.sh`,
-        'altv-server': `https://cdn.altv.mp/server/${branch}/x64_linux/altv-server`,
+        'modules/libjs-module.so': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libjs-module.so`,
+        'libnode.so.102': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.so.102`,
+        'start.sh': `https://${CDN_ADDRESS}/others/start.sh`,
+        'altv-server': `https://${CDN_ADDRESS}/server/${branch}/x64_linux/altv-server`,
     };
 
     const windowsFiles = {
         ...sharedFiles,
-        'modules/js-module.dll': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/js-module.dll`,
-        'libnode.dll': `https://cdn.altv.mp/js-module/${branch}/${platform}/modules/js-module/libnode.dll`,
-        'altv-server.exe': `https://cdn.altv.mp/server/${branch}/${platform}/altv-server.exe`,
+        'modules/js-module.dll': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/js-module.dll`,
+        'libnode.dll': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.dll`,
+        'altv-server.exe': `https://${CDN_ADDRESS}/server/${branch}/${platform}/altv-server.exe`,
     };
 
     const sharedUpdates = [
-        `https://cdn.altv.mp/data/${branch}/update.json`,
+        `https://${CDN_ADDRESS}/data/${branch}/update.json`,
     ];
 
     const linuxUpdates = [
         ...sharedUpdates,
-        `https://cdn.altv.mp/server/${branch}/x64_linux/update.json`,
-        `https://cdn.altv.mp/js-module/${branch}/x64_linux/update.json`,
+        `https://${CDN_ADDRESS}/server/${branch}/x64_linux/update.json`,
+        `https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/update.json`,
     ];
 
     const windowsUpdates = [
         ...sharedUpdates,
-        `https://cdn.altv.mp/server/${branch}/x64_win32/update.json`,
-        `https://cdn.altv.mp/js-module/${branch}/x64_win32/update.json`,
+        `https://${CDN_ADDRESS}/server/${branch}/x64_win32/update.json`,
+        `https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/update.json`,
     ];
 
     if (loadBytecodeModule) {
-        linuxFiles['modules/libjs-bytecode-module.so'] = `https://cdn.altv.mp/js-bytecode-module/${branch}/${platform}/modules/libjs-bytecode-module.so`;
-        windowsFiles['modules/js-bytecode-module.dll'] = `https://cdn.altv.mp/js-bytecode-module/${branch}/${platform}/modules/js-bytecode-module.dll`;
+        linuxFiles['modules/libjs-bytecode-module.so'] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/${platform}/modules/libjs-bytecode-module.so`;
+        windowsFiles['modules/js-bytecode-module.dll'] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/${platform}/modules/js-bytecode-module.dll`;
 
-        linuxUpdates.push(`https://cdn.altv.mp/js-bytecode-module/${branch}/x64_linux/update.json`)
-        windowsUpdates.push(`https://cdn.altv.mp/js-bytecode-module/${branch}/x64_win32/update.json`);
+        linuxUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`)
+        windowsUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/update.json`);
     }
 
     if (loadCSharpModule) {
 
-        linuxFiles['AltV.Net.Host.dll'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/AltV.Net.Host.dll`;
-        linuxFiles['AltV.Net.Host.runtimeconfig.json'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/AltV.Net.Host.runtimeconfig.json`;
+        linuxFiles['AltV.Net.Host.dll'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/AltV.Net.Host.dll`;
+        linuxFiles['AltV.Net.Host.runtimeconfig.json'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/AltV.Net.Host.runtimeconfig.json`;
 
-        linuxFiles['modules/libcsharp-module.so'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/modules/libcsharp-module.so`;
+        linuxFiles['modules/libcsharp-module.so'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/modules/libcsharp-module.so`;
 
-        windowsFiles['AltV.Net.Host.dll'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/AltV.Net.Host.dll`;
-        windowsFiles['AltV.Net.Host.runtimeconfig.json'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/AltV.Net.Host.runtimeconfig.json`;
+        windowsFiles['AltV.Net.Host.dll'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/AltV.Net.Host.dll`;
+        windowsFiles['AltV.Net.Host.runtimeconfig.json'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/AltV.Net.Host.runtimeconfig.json`;
 
-        windowsFiles['modules/csharp-module.dll'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/modules/csharp-module.dll`;
-        windowsFiles['modules/csharp-module.pdb'] = `https://cdn.altv.mp/coreclr-module/${branch}/${platform}/modules/csharp-module.pdb`;
+        windowsFiles['modules/csharp-module.dll'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/modules/csharp-module.dll`;
+        windowsFiles['modules/csharp-module.pdb'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/modules/csharp-module.pdb`;
 
-        linuxUpdates.push(`https://cdn.altv.mp/coreclr-module/${branch}/x64_linux/update.json`);
-        windowsUpdates.push(`https://cdn.altv.mp/coreclr-module/${branch}/x64_win32/update.json`);
+        linuxUpdates.push(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/update.json`);
+        windowsUpdates.push(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/update.json`);
     }
 
     const [filesUpdate, filesToUse] = (platform == 'x64_win32')
