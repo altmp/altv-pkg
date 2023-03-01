@@ -53,7 +53,7 @@ async function start() {
     const linuxFiles = {
         ...sharedFiles,
         'modules/libjs-module.so': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libjs-module.so`,
-        'libnode.so.102': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.so.102`,
+        'libnode.so.108': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.so.108`,
         'start.sh': `https://${CDN_ADDRESS}/others/start.sh`,
         'altv-server': `https://${CDN_ADDRESS}/server/${branch}/x64_linux/altv-server`,
     };
@@ -213,7 +213,7 @@ const pathsCorrects = {
     'modules/js-module/js-module.dll': 'modules/js-module.dll',
     'modules/js-module/libnode.dll': 'libnode.dll',
     'modules/js-module/libjs-module.so': 'modules/libjs-module.so',
-    'modules/js-module/libnode.so.102': 'libnode.so.102',
+    'modules/js-module/libnode.so.108': 'libnode.so.108',
 };
 
 function correctPathIfNecessary(file) {
