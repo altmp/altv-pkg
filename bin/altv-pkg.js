@@ -48,6 +48,7 @@ async function start() {
         'data/vehmods.bin': `https://${CDN_ADDRESS}/data/${branch}/data/vehmods.bin`,
         'data/clothes.bin': `https://${CDN_ADDRESS}/data/${branch}/data/clothes.bin`,
         'data/pedmodels.bin': `https://${CDN_ADDRESS}/data/${branch}/data/pedmodels.bin`,
+        'data/rpfdata.bin': `https://${CDN_ADDRESS}/data/${branch}/data/rpfdata.bin`,
     };
 
     const linuxFiles = {
