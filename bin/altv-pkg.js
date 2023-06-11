@@ -98,13 +98,11 @@ async function start() {
         console.log(chalk.yellowBright('===== QA branches require additional authorization! ====='))
     }
 
-    const sharedFiles = {
-        'data/vehmodels.bin': `https://${CDN_ADDRESS}/data/${branch}/data/vehmodels.bin`,
-        'data/vehmods.bin': `https://${CDN_ADDRESS}/data/${branch}/data/vehmods.bin`,
-        'data/clothes.bin': `https://${CDN_ADDRESS}/data/${branch}/data/clothes.bin`,
-        'data/pedmodels.bin': `https://${CDN_ADDRESS}/data/${branch}/data/pedmodels.bin`,
-        'data/rpfdata.bin': `https://${CDN_ADDRESS}/data/${branch}/data/rpfdata.bin`,
-    };
+    const sharedFiles = {};
+    const res = await axios.get(`https://${CDN_ADDRESS}/data/${branch}/update.json`, { responseType: 'json' });
+    for ([file, hash] of Object.entries(res.data.hashList)) {
+        sharedFiles[file] = `https://${CDN_ADDRESS}/data/${branch}/${file}`;
+    }
 
     const linuxFiles = {
         ...sharedFiles,
