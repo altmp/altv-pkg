@@ -30,7 +30,7 @@ function authorizeDiscord() {
                         prompt: 'none'
                     });
                     resolve(code);
-                } catch(e) {
+                } catch (e) {
                     reject(e);
                     return;
                 } finally {
@@ -39,7 +39,7 @@ function authorizeDiscord() {
             });
 
             await client.login({ clientId: DISCORD_ID });
-        } catch(e) {
+        } catch (e) {
             reject(e);
         }
     });
@@ -48,9 +48,9 @@ function authorizeDiscord() {
 async function authorizeCDN(code) {
     console.log(chalk.greenBright('===== Authorizing in CDN ====='));
     try {
-        const res = await axios.get('https://qa-auth.alt-mp.com/auth', { responseType: 'json', headers: { Authorization: code }});
+        const res = await axios.get('https://qa-auth.alt-mp.com/auth', { responseType: 'json', headers: { Authorization: code } });
         return res.data.token;
-    } catch(e) {
+    } catch (e) {
         if (e?.response?.status != 403) throw e;
         throw new Error("You do not have permissions to access this branch");
     }
@@ -104,6 +104,7 @@ async function start() {
         'data/clothes.bin': `https://${CDN_ADDRESS}/data/${branch}/data/clothes.bin`,
         'data/pedmodels.bin': `https://${CDN_ADDRESS}/data/${branch}/data/pedmodels.bin`,
         'data/rpfdata.bin': `https://${CDN_ADDRESS}/data/${branch}/data/rpfdata.bin`,
+        'data/weaponmodels.bin': `https://${CDN_ADDRESS}/data/${branch}/data/weaponmodels.bin`,
     };
 
     const linuxFiles = {
@@ -181,7 +182,7 @@ async function start() {
             const code = await authorizeDiscord();
             const token = await authorizeCDN(code);
             headers = { 'X-Auth': token }
-        } catch(e) {
+        } catch (e) {
             console.error(chalk.redBright(`Failed to authorize: ${e}`));
             return;
         }
