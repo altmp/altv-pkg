@@ -79,12 +79,12 @@ for (let i = 0; i < args.length; i++) {
     }
 
     if (args[i] === "windows") {
-        platform = args[i];
+        platform = "x64_win32";
         break;
     }
 
     if (args[i] === "linux") {
-        platform = args[i];
+        platform = "x64_linux";
         break;
     }
 }
