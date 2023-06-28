@@ -11,10 +11,11 @@ const CDN_ADDRESS = "cdn.alt-mp.com";
 const DISCORD_ID = "580868196270342175"
 
 const args = process.argv;
-const platform = process.platform == 'win32' ? 'x64_win32' : 'x64_linux';
 const rootPath = process.cwd();
 
+let platform = process.platform == 'win32' ? 'x64_win32' : 'x64_linux';
 let branch = null;
+
 const { loadBytecodeModule, loadCSharpModule } = loadRuntimeConfig();
 
 function authorizeDiscord() {
@@ -74,6 +75,16 @@ for (let i = 0; i < args.length; i++) {
 
     if (args[i].startsWith("qa")) {
         branch = args[i];
+        break;
+    }
+
+    if (args[i] === "windows") {
+        platform = "x64_win32";
+        break;
+    }
+
+    if (args[i] === "linux") {
+        platform = "x64_linux";
         break;
     }
 }
