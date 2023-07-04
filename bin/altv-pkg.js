@@ -124,6 +124,7 @@ async function start() {
         'libnode.so.108': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.so.108`,
         'start.sh': `https://${CDN_ADDRESS}/others/start.sh`,
         'altv-server': `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/altv-server`,
+        'altv-crash-handler': `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/altv-crash-handler`,
     };
 
     const windowsFiles = {
@@ -131,6 +132,7 @@ async function start() {
         'modules/js-module.dll': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/js-module.dll`,
         'libnode.dll': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.dll`,
         'altv-server.exe': `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/${platform}/altv-server.exe`,
+        'altv-crash-handler.exe': `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/${platform}/altv-crash-handler.exe`,
     };
 
     const sharedUpdates = [
