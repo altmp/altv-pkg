@@ -110,7 +110,7 @@ async function start() {
     }
 
     const sharedFiles = {};
-    const res = await axios.get(`https://${CDN_ADDRESS}/data/${branch}/update.json`, { responseType: 'json' });
+    let res = await axios.get(`https://${CDN_ADDRESS}/data/${branch}/update.json`, { responseType: 'json' });
     for ([file, hash] of Object.entries(res.data.hashList)) {
         sharedFiles[file] = `https://${CDN_ADDRESS}/data/${branch}/${file}`;
     }
