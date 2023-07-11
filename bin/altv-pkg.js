@@ -109,31 +109,34 @@ async function start() {
         console.log(chalk.yellowBright('===== QA branches require additional authorization! ====='))
     }
 
-    const sharedFiles = {
-        'data/vehmodels.bin': `https://${CDN_ADDRESS}/data/${branch}/data/vehmodels.bin`,
-        'data/vehmods.bin': `https://${CDN_ADDRESS}/data/${branch}/data/vehmods.bin`,
-        'data/clothes.bin': `https://${CDN_ADDRESS}/data/${branch}/data/clothes.bin`,
-        'data/pedmodels.bin': `https://${CDN_ADDRESS}/data/${branch}/data/pedmodels.bin`,
-        'data/rpfdata.bin': `https://${CDN_ADDRESS}/data/${branch}/data/rpfdata.bin`,
-        'data/weaponmodels.bin': `https://${CDN_ADDRESS}/data/${branch}/data/weaponmodels.bin`,
-    };
+    const sharedFiles = {};
+    let res = await axios.get(`https://${CDN_ADDRESS}/data/${branch}/update.json`, { responseType: 'json' });
+    for ([file, hash] of Object.entries(res.data.hashList)) {
+        sharedFiles[file] = `https://${CDN_ADDRESS}/data/${branch}/${file}`;
+    }
 
     const linuxFiles = {
         ...sharedFiles,
         'modules/libjs-module.so': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libjs-module.so`,
         'libnode.so.108': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.so.108`,
         'start.sh': `https://${CDN_ADDRESS}/others/start.sh`,
-        'altv-server': `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/altv-server`,
-        'altv-crash-handler': `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/altv-crash-handler`,
     };
+
+    res = await axios.get(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`, { responseType: 'json' });
+    for ([file, hash] of Object.entries(res.data.hashList)) {
+        linuxFiles[file] = `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/${file}`;
+    }
 
     const windowsFiles = {
         ...sharedFiles,
         'modules/js-module.dll': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/js-module.dll`,
         'libnode.dll': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.dll`,
-        'altv-server.exe': `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/${platform}/altv-server.exe`,
-        'altv-crash-handler.exe': `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/${platform}/altv-crash-handler.exe`,
     };
+
+    res = await axios.get(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`, { responseType: 'json' });
+    for ([file, hash] of Object.entries(res.data.hashList)) {
+        windowsFiles[file] = `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/${file}`;
+    }
 
     const sharedUpdates = [
         `https://${CDN_ADDRESS}/data/${branch}/update.json`,
@@ -152,25 +155,30 @@ async function start() {
     ];
 
     if (loadBytecodeModule) {
-        linuxFiles['modules/libjs-bytecode-module.so'] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/${platform}/modules/libjs-bytecode-module.so`;
-        windowsFiles['modules/js-bytecode-module.dll'] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/${platform}/modules/js-bytecode-module.dll`;
+        res = await axios.get(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`, { responseType: 'json' });
+        for ([file, hash] of Object.entries(res.data.hashList)) {
+            linuxFiles[file] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/${file}`;
+        }
+
+        res = await axios.get(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/update.json`, { responseType: 'json' });
+        for ([file, hash] of Object.entries(res.data.hashList)) {
+            windowsFiles[file] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/${file}`;
+        }
 
         linuxUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`)
         windowsUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/update.json`);
     }
 
     if (loadCSharpModule) {
+        res = await axios.get(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/update.json`, { responseType: 'json' });
+        for ([file, hash] of Object.entries(res.data.hashList)) {
+            linuxFiles[file] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/${file}`;
+        }
 
-        linuxFiles['AltV.Net.Host.dll'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/AltV.Net.Host.dll`;
-        linuxFiles['AltV.Net.Host.runtimeconfig.json'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/AltV.Net.Host.runtimeconfig.json`;
-
-        linuxFiles['modules/libcsharp-module.so'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/modules/libcsharp-module.so`;
-
-        windowsFiles['AltV.Net.Host.dll'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/AltV.Net.Host.dll`;
-        windowsFiles['AltV.Net.Host.runtimeconfig.json'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/AltV.Net.Host.runtimeconfig.json`;
-
-        windowsFiles['modules/csharp-module.dll'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/modules/csharp-module.dll`;
-        windowsFiles['modules/csharp-module.pdb'] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/${platform}/modules/csharp-module.pdb`;
+        res = await axios.get(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/update.json`, { responseType: 'json' });
+        for ([file, hash] of Object.entries(res.data.hashList)) {
+            windowsFiles[file] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/${file}`;
+        }
 
         linuxUpdates.push(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/update.json`);
         windowsUpdates.push(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/update.json`);
