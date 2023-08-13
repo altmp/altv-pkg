@@ -104,13 +104,24 @@ async function start() {
     const SERVER_CDN_ADDRESS = isQa ? "qa-cdn.altmp.workers.dev" : CDN_ADDRESS;
     const serverBranch = branch;
 
+    let headers = undefined;
+
     if (isQa) {
         branch = "dev";
         console.log(chalk.yellowBright('===== QA branches require additional authorization! ====='))
+
+        try {
+            const code = await authorizeDiscord();
+            const token = await authorizeCDN(code);
+            headers = { 'X-Auth': token }
+        } catch (e) {
+            console.error(chalk.redBright(`Failed to authorize: ${e}`));
+            return;
+        }
     }
 
     const sharedFiles = {};
-    let res = await axios.get(`https://${CDN_ADDRESS}/data/${branch}/update.json`, { responseType: 'json' });
+    let res = await axios.get(`https://${CDN_ADDRESS}/data/${branch}/update.json`, { responseType: 'json', headers });
     for ([file, hash] of Object.entries(res.data.hashList)) {
         sharedFiles[file] = `https://${CDN_ADDRESS}/data/${branch}/${file}`;
     }
@@ -122,7 +133,7 @@ async function start() {
         'start.sh': `https://${CDN_ADDRESS}/others/start.sh`,
     };
 
-    res = await axios.get(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`, { responseType: 'json' });
+    res = await axios.get(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`, { responseType: 'json', headers });
     for ([file, hash] of Object.entries(res.data.hashList)) {
         linuxFiles[file] = `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/${file}`;
     }
@@ -133,7 +144,7 @@ async function start() {
         'libnode.dll': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.dll`,
     };
 
-    res = await axios.get(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`, { responseType: 'json' });
+    res = await axios.get(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`, { responseType: 'json', headers });
     for ([file, hash] of Object.entries(res.data.hashList)) {
         windowsFiles[file] = `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/${file}`;
     }
@@ -155,12 +166,12 @@ async function start() {
     ];
 
     if (loadBytecodeModule) {
-        res = await axios.get(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`, { responseType: 'json' });
+        res = await axios.get(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
         for ([file, hash] of Object.entries(res.data.hashList)) {
             linuxFiles[file] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/${file}`;
         }
 
-        res = await axios.get(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/update.json`, { responseType: 'json' });
+        res = await axios.get(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/update.json`, { responseType: 'json', headers });
         for ([file, hash] of Object.entries(res.data.hashList)) {
             windowsFiles[file] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/${file}`;
         }
@@ -170,12 +181,12 @@ async function start() {
     }
 
     if (loadCSharpModule) {
-        res = await axios.get(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/update.json`, { responseType: 'json' });
+        res = await axios.get(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
         for ([file, hash] of Object.entries(res.data.hashList)) {
             linuxFiles[file] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/${file}`;
         }
 
-        res = await axios.get(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/update.json`, { responseType: 'json' });
+        res = await axios.get(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/update.json`, { responseType: 'json', headers });
         for ([file, hash] of Object.entries(res.data.hashList)) {
             windowsFiles[file] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/${file}`;
         }
@@ -194,19 +205,6 @@ async function start() {
 
     if (!fs.existsSync(path.join(rootPath, 'modules'))) {
         fs.mkdirSync(path.join(rootPath, 'modules'));
-    }
-
-    let headers = undefined;
-
-    if (isQa) {
-        try {
-            const code = await authorizeDiscord();
-            const token = await authorizeCDN(code);
-            headers = { 'X-Auth': token }
-        } catch (e) {
-            console.error(chalk.redBright(`Failed to authorize: ${e}`));
-            return;
-        }
     }
 
     console.log(chalk.greenBright('===== Checking file hashes ====='));

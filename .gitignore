@@ -2,6 +2,8 @@ node_modules/
 resources/
 altv-server
 altv-server.exe
+altv-crash-handler
+altv-crash-handler.exe
 modules/
 data/
 libnode.dll
@@ -9,3 +11,4 @@ AltV.Net.Host*
 server.log
 server.toml
 .altvpkgrc.json
+yarn.lock
