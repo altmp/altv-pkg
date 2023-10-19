@@ -60,32 +60,32 @@ async function authorizeCDN(code) {
 for (let i = 0; i < args.length; i++) {
     if (args[i] === 'release') {
         branch = 'release';
-        break;
+        continue;
     }
 
     if (args[i] === 'rc') {
         branch = 'rc';
-        break;
+        continue;
     }
 
     if (args[i] === 'dev') {
         branch = 'dev';
-        break;
+        continue;
     }
 
     if (args[i].startsWith("qa")) {
         branch = args[i];
-        break;
+        continue;
     }
 
     if (args[i] === "windows") {
         platform = "x64_win32";
-        break;
+        continue;
     }
 
     if (args[i] === "linux") {
         platform = "x64_linux";
-        break;
+        continue;
     }
 }
 
