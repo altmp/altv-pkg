@@ -23,11 +23,15 @@ npx altv-pkg release
 ```
 
 ## Configuration
+
 Create a `.altvpkgrc.json` file in your root directory and add the following JSON code.
+
+**Note:** The `loadJSV2Module` configuration allows you to include the experimental JavaScript V2 (JSV2) module when downloading binaries. Please be aware that as of the current release, the JSV2 module is exclusively available in the dev branch.
 
 ```
 {
     "loadBytecodeModule": true,
-    "loadCSharpModule": true
+    "loadCSharpModule": true,
+    "loadJSV2Module": true
 }
 ```

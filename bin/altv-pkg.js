@@ -16,7 +16,7 @@ const rootPath = process.cwd();
 let platform = process.platform == 'win32' ? 'x64_win32' : 'x64_linux';
 let branch = null;
 
-const { loadBytecodeModule, loadCSharpModule } = loadRuntimeConfig();
+const { loadBytecodeModule, loadCSharpModule, loadJSV2Module } = loadRuntimeConfig();
 
 function authorizeDiscord() {
     console.log(chalk.greenBright('===== Authorizing via Discord ====='));
@@ -195,6 +195,27 @@ async function start() {
         windowsUpdates.push(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/update.json`);
     }
 
+    if (loadJSV2Module) {
+        if (branch != 'dev') {
+            console.log(chalk.redBright('===== JS V2 module is only available in dev currently, skipping ====='));
+        } else {
+            res = await axios.get(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
+            for ([file, hash] of Object.entries(res.data.hashList)) {
+                linuxFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/${file}`;
+            }
+
+            res = await axios.get(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`, { responseType: 'json', headers });
+            for ([file, hash] of Object.entries(res.data.hashList)) {
+                windowsFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/${file}`;
+            }
+
+            linuxUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`);
+            windowsUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`);
+        }
+
+
+    }
+
     const [filesUpdate, filesToUse] = (platform == 'x64_win32')
         ? [windowsUpdates, windowsFiles]
         : [linuxUpdates, linuxFiles];
@@ -312,6 +333,7 @@ function correctPathIfNecessary(file) {
 function loadRuntimeConfig() {
     let loadBytecodeModule = false;
     let loadCSharpModule = false;
+    let loadJSV2Module = false;
 
     try {
         const data = fs.readFileSync(`./${RC_FILE_NAME}`, { encoding: 'utf8' });
@@ -319,11 +341,12 @@ function loadRuntimeConfig() {
 
         loadBytecodeModule = !!parsedData.loadBytecodeModule;
         loadCSharpModule = !!parsedData.loadCSharpModule;
+        loadJSV2Module = !!parsedData.loadJSV2Module;
     } catch (e) {
         console.log(chalk.gray(`Configuration file '${RC_FILE_NAME}' could not be read. Continuing without...`));
     }
 
-    return { loadBytecodeModule, loadCSharpModule };
+    return { loadBytecodeModule, loadCSharpModule, loadJSV2Module };
 }
 
 start();

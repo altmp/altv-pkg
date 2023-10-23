@@ -7,6 +7,7 @@ altv-crash-handler.exe
 modules/
 data/
 libnode.dll
+libnodev2.dll
 AltV.Net.Host*
 server.log
 server.toml
