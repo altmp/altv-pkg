@@ -4,6 +4,7 @@ altv-server
 altv-server.exe
 altv-crash-handler
 altv-crash-handler.exe
+altv-voice-server.exe
 modules/
 data/
 libnode.dll
