@@ -28,10 +28,13 @@ Create a `.altvpkgrc.json` file in your root directory and add the following JSO
 
 **Note:** The `loadJSV2Module` configuration allows you to include the experimental JavaScript V2 (JSV2) module when downloading binaries. Please be aware that as of the current release, the JSV2 module is exclusively available in the dev branch.
 
+**Note** The `loadVoiceServer` configuration allows you to include [external voice server](https://docs.altv.mp/articles/external_voice_server.html) when downloading binaries.
+
 ```
 {
     "loadBytecodeModule": true,
     "loadCSharpModule": true,
-    "loadJSV2Module": true
+    "loadJSV2Module": true,
+    "loadVoiceServer": true
 }
 ```

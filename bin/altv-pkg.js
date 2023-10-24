@@ -16,7 +16,7 @@ const rootPath = process.cwd();
 let platform = process.platform == 'win32' ? 'x64_win32' : 'x64_linux';
 let branch = null;
 
-const { loadBytecodeModule, loadCSharpModule, loadJSV2Module } = loadRuntimeConfig();
+const { loadBytecodeModule, loadCSharpModule, loadJSV2Module, loadVoiceServer } = loadRuntimeConfig();
 
 function authorizeDiscord() {
     console.log(chalk.greenBright('===== Authorizing via Discord ====='));
@@ -212,8 +212,21 @@ async function start() {
             linuxUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`);
             windowsUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`);
         }
+    }
 
+    if (loadVoiceServer) {
+        res = await axios.get(`https://${CDN_ADDRESS}/voice-server/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
+        for ([file, hash] of Object.entries(res.data.hashList)) {
+            linuxFiles[file] = `https://${CDN_ADDRESS}/voice-server/${branch}/x64_linux/${file}`;
+        }
 
+        res = await axios.get(`https://${CDN_ADDRESS}/voice-server/${branch}/x64_win32/update.json`, { responseType: 'json', headers });
+        for ([file, hash] of Object.entries(res.data.hashList)) {
+            windowsFiles[file] = `https://${CDN_ADDRESS}/voice-server/${branch}/x64_win32/${file}`;
+        }
+
+        linuxUpdates.push(`https://${CDN_ADDRESS}/voice-server/${branch}/x64_linux/update.json`);
+        windowsUpdates.push(`https://${CDN_ADDRESS}/voice-server/${branch}/x64_win32/update.json`);
     }
 
     const [filesUpdate, filesToUse] = (platform == 'x64_win32')
@@ -334,6 +347,7 @@ function loadRuntimeConfig() {
     let loadBytecodeModule = false;
     let loadCSharpModule = false;
     let loadJSV2Module = false;
+    let loadVoiceServer = false;
 
     try {
         const data = fs.readFileSync(`./${RC_FILE_NAME}`, { encoding: 'utf8' });
@@ -342,11 +356,12 @@ function loadRuntimeConfig() {
         loadBytecodeModule = !!parsedData.loadBytecodeModule;
         loadCSharpModule = !!parsedData.loadCSharpModule;
         loadJSV2Module = !!parsedData.loadJSV2Module;
+        loadVoiceServer = !!parsedData.loadVoiceServer;
     } catch (e) {
         console.log(chalk.gray(`Configuration file '${RC_FILE_NAME}' could not be read. Continuing without...`));
     }
 
-    return { loadBytecodeModule, loadCSharpModule, loadJSV2Module };
+    return { loadBytecodeModule, loadCSharpModule, loadJSV2Module, loadVoiceServer };
 }
 
 start();
