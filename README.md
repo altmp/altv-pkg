@@ -30,11 +30,14 @@ Create a `.altvpkgrc.json` file in your root directory and add the following JSO
 
 **Note:** The `loadVoiceServer` configuration allows you to include [external voice server](https://docs.altv.mp/articles/external_voice_server.html) when downloading binaries.
 
+Below you'll find all available options for the `.altvpkgrc.json` file with their default values:
+
 ```
 {
-    "loadBytecodeModule": true,
-    "loadCSharpModule": true,
-    "loadJSV2Module": true,
-    "loadVoiceServer": true
+    "loadJSModule": true,
+    "loadBytecodeModule": false,
+    "loadCSharpModule": false,
+    "loadJSV2Module": false,
+    "loadVoiceServer": false
 }
 ```

@@ -16,7 +16,7 @@ const rootPath = process.cwd();
 let platform = process.platform == 'win32' ? 'x64_win32' : 'x64_linux';
 let branch = null;
 
-const { loadBytecodeModule, loadCSharpModule, loadJSV2Module, loadVoiceServer } = loadRuntimeConfig();
+const { loadJSModule, loadBytecodeModule, loadCSharpModule, loadJSV2Module, loadVoiceServer } = loadRuntimeConfig();
 
 function authorizeDiscord() {
     console.log(chalk.greenBright('===== Authorizing via Discord ====='));
@@ -128,8 +128,6 @@ async function start() {
 
     const linuxFiles = {
         ...sharedFiles,
-        'modules/libjs-module.so': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libjs-module.so`,
-        'libnode.so.108': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.so.108`,
         'start.sh': `https://${CDN_ADDRESS}/others/start.sh`,
     };
 
@@ -138,11 +136,7 @@ async function start() {
         linuxFiles[file] = `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/${file}`;
     }
 
-    const windowsFiles = {
-        ...sharedFiles,
-        'modules/js-module.dll': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/js-module.dll`,
-        'libnode.dll': `https://${CDN_ADDRESS}/js-module/${branch}/${platform}/modules/js-module/libnode.dll`,
-    };
+    const windowsFiles = { ...sharedFiles };
 
     res = await axios.get(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`, { responseType: 'json', headers });
     for ([file, hash] of Object.entries(res.data.hashList)) {
@@ -155,15 +149,28 @@ async function start() {
 
     const linuxUpdates = [
         ...sharedUpdates,
-        `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`,
-        `https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/update.json`,
+        `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`
     ];
 
     const windowsUpdates = [
         ...sharedUpdates,
-        `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`,
-        `https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/update.json`,
+        `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`
     ];
+
+    if (loadJSModule) {
+        res = await axios.get(`https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
+        for ([file, hash] of Object.entries(res.data.hashList)) {
+            linuxFiles[file] = `https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/${file}`;
+        }
+
+        res = await axios.get(`https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/update.json`, { responseType: 'json', headers });
+        for ([file, hash] of Object.entries(res.data.hashList)) {
+            windowsFiles[file] = `https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/${file}`;
+        }
+
+        linuxUpdates.push(`https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/update.json`)
+        windowsUpdates.push(`https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/update.json`);
+    }
 
     if (loadBytecodeModule) {
         res = await axios.get(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
@@ -247,23 +254,25 @@ async function start() {
 
     let promises = [];
     let anyHashRejected = false;
+
+    console.log(filesToUse[file])
     for (const url of filesUpdate) {
         const promise = new Promise((resolve, reject) => {
             axios.get(url, { responseType: 'json', headers }).then(({ data: {
                 hashList
             } }) => {
                 for (let [file, hash] of Object.entries(hashList)) {
-                    file = correctPathIfNecessary(file);
+                    const correctedFileName = correctPathIfNecessary(file);
 
-                    if (getLocalFileHash(file) === hash) {
-                        console.log(chalk.cyanBright('✓'), chalk.whiteBright(file));
+                    if (getLocalFileHash(correctedFileName) === hash) {
+                        console.log(chalk.cyanBright('✓'), chalk.whiteBright(correctedFileName));
                         continue;
                     }
 
-                    console.log(chalk.redBright('x'), chalk.whiteBright(file));
+                    console.log(chalk.redBright('x'), chalk.whiteBright(correctedFileName));
 
                     if (anyHashRejected) return;
-                    filesToDownload[file] = filesToUse[file];
+                    filesToDownload[correctedFileName] = filesToUse[file];
                 }
 
                 resolve();
@@ -344,6 +353,8 @@ function correctPathIfNecessary(file) {
 }
 
 function loadRuntimeConfig() {
+    let loadJSModule = true;
+
     let loadBytecodeModule = false;
     let loadCSharpModule = false;
     let loadJSV2Module = false;
@@ -353,6 +364,9 @@ function loadRuntimeConfig() {
         const data = fs.readFileSync(`./${RC_FILE_NAME}`, { encoding: 'utf8' });
         const parsedData = JSON.parse(data);
 
+        if (typeof parsedData.loadJSModule !== 'undefined')
+            loadJSModule = !!parsedData.loadJSModule;
+
         loadBytecodeModule = !!parsedData.loadBytecodeModule;
         loadCSharpModule = !!parsedData.loadCSharpModule;
         loadJSV2Module = !!parsedData.loadJSV2Module;
@@ -361,7 +375,7 @@ function loadRuntimeConfig() {
         console.log(chalk.gray(`Configuration file '${RC_FILE_NAME}' could not be read. Continuing without...`));
     }
 
-    return { loadBytecodeModule, loadCSharpModule, loadJSV2Module, loadVoiceServer };
+    return { loadJSModule, loadBytecodeModule, loadCSharpModule, loadJSV2Module, loadVoiceServer };
 }
 
 start();
