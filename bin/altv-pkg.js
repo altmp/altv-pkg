@@ -255,7 +255,6 @@ async function start() {
     let promises = [];
     let anyHashRejected = false;
 
-    console.log(filesToUse[file])
     for (const url of filesUpdate) {
         const promise = new Promise((resolve, reject) => {
             axios.get(url, { responseType: 'json', headers }).then(({ data: {
