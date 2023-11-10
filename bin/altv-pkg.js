@@ -1,14 +1,15 @@
 #!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-const chalk = require('chalk');
 const crypto = require('crypto');
 const RPC = require('discord-rpc');
+const chalk = require('chalk');
 
-const RC_FILE_NAME = ".altvpkgrc.json";
-const CDN_ADDRESS = "cdn.alt-mp.com";
-const DISCORD_ID = "580868196270342175"
+const fs = require('node:fs');
+const path = require('node:path');
+const { Readable } = require('node:stream');
+
+const RC_FILE_NAME = '.altvpkgrc.json';
+const CDN_ADDRESS = 'cdn.alt-mp.com';
+const DISCORD_ID = '580868196270342175';
 
 const args = process.argv;
 const rootPath = process.cwd();
@@ -28,7 +29,7 @@ function authorizeDiscord() {
                     const { code } = await client.request('AUTHORIZE', {
                         scopes: ['identify'],
                         client_id: DISCORD_ID,
-                        prompt: 'none'
+                        prompt: 'none',
                     });
                     resolve(code);
                 } catch (e) {
@@ -49,11 +50,14 @@ function authorizeDiscord() {
 async function authorizeCDN(code) {
     console.log(chalk.greenBright('===== Authorizing in CDN ====='));
     try {
-        const res = await axios.get('https://qa-auth.alt-mp.com/auth', { responseType: 'json', headers: { Authorization: code } });
-        return res.data.token;
+        const res = await fetchJsonData('https://qa-auth.alt-mp.com/auth', {
+            responseType: 'application/json',
+            headers: { Authorization: code },
+        });
+        return res.token;
     } catch (e) {
         if (e?.response?.status != 403) throw e;
-        throw new Error("You do not have permissions to access this branch");
+        throw new Error('You do not have permissions to access this branch');
     }
 }
 
@@ -73,47 +77,67 @@ for (let i = 0; i < args.length; i++) {
         continue;
     }
 
-    if (args[i].startsWith("qa")) {
+    if (args[i].startsWith('qa')) {
         branch = args[i];
         continue;
     }
 
-    if (args[i] === "windows") {
-        platform = "x64_win32";
+    if (args[i] === 'windows') {
+        platform = 'x64_win32';
         continue;
     }
 
-    if (args[i] === "linux") {
-        platform = "x64_linux";
+    if (args[i] === 'linux') {
+        platform = 'x64_linux';
         continue;
     }
 }
 
 if (!branch) {
-    console.log(chalk.redBright('Please specify a branch: release, rc, or dev. \r\nExample:\r'));
-    console.log(chalk.green('npx altv-pkg release'));
-    process.exit(0);
+    branch = 'release';
+    console.log(chalk.yellowBright('Branch not specified, using release'));
+}
+
+/**
+ * Fetch JSON data and return an object
+ *
+ * @param {string} url
+ * @param {Object} headers
+ * @return {Promise<Object>}
+ */
+async function fetchJsonData(url, headers) {
+    const response = await fetch(url, headers).catch((err) => {
+        throw err;
+    });
+
+    if (!response || !response.ok) {
+        console.log(chalk.redBright('Failed to download latest '));
+        return undefined;
+    }
+
+    const res = await response.json();
+    return res;
 }
 
 async function start() {
     console.log(chalk.greenBright('===== altv-pkg ====='));
     console.log(chalk.whiteBright(`System: `), chalk.yellowBright(platform));
     console.log(chalk.whiteBright(`Branch: `), chalk.yellowBright(branch));
-    const isQa = branch.startsWith("qa");
+    const isQa = branch.startsWith('qa');
 
-    const SERVER_CDN_ADDRESS = isQa ? "qa-cdn.altmp.workers.dev" : CDN_ADDRESS;
+    const SERVER_CDN_ADDRESS = isQa ? 'qa-cdn.altmp.workers.dev' : CDN_ADDRESS;
     const serverBranch = branch;
 
     let headers = undefined;
 
     if (isQa) {
-        branch = "dev";
-        console.log(chalk.yellowBright('===== QA branches require additional authorization! ====='))
+        branch = 'dev';
+        console.log(chalk.yellowBright('===== QA branches require additional authorization! ====='));
 
         try {
             const code = await authorizeDiscord();
             const token = await authorizeCDN(code);
-            headers = { 'X-Auth': token }
+            headers = { 'X-Auth': token };
         } catch (e) {
             console.error(chalk.redBright(`Failed to authorize: ${e}`));
             return;
@@ -121,8 +145,12 @@ async function start() {
     }
 
     const sharedFiles = {};
-    let res = await axios.get(`https://${CDN_ADDRESS}/data/${branch}/update.json`, { responseType: 'json', headers });
-    for ([file, hash] of Object.entries(res.data.hashList)) {
+    let res = await fetchJsonData(`https://${CDN_ADDRESS}/data/${branch}/update.json`, {
+        responseType: 'application/json',
+        headers,
+    });
+
+    for ([file, hash] of Object.entries(res.hashList)) {
         sharedFiles[file] = `https://${CDN_ADDRESS}/data/${branch}/${file}`;
     }
 
@@ -131,70 +159,93 @@ async function start() {
         'start.sh': `https://${CDN_ADDRESS}/others/start.sh`,
     };
 
-    res = await axios.get(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`, { responseType: 'json', headers });
-    for ([file, hash] of Object.entries(res.data.hashList)) {
+    res = await fetchJsonData(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`, {
+        responseType: 'application/json',
+        headers,
+    });
+
+    for ([file, hash] of Object.entries(res.hashList)) {
         linuxFiles[file] = `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/${file}`;
     }
 
     const windowsFiles = { ...sharedFiles };
 
-    res = await axios.get(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`, { responseType: 'json', headers });
-    for ([file, hash] of Object.entries(res.data.hashList)) {
+    res = await fetchJsonData(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`, {
+        responseType: 'application/json',
+        headers,
+    });
+    for ([file, hash] of Object.entries(res.hashList)) {
         windowsFiles[file] = `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/${file}`;
     }
 
-    const sharedUpdates = [
-        `https://${CDN_ADDRESS}/data/${branch}/update.json`,
-    ];
+    const sharedUpdates = [`https://${CDN_ADDRESS}/data/${branch}/update.json`];
 
     const linuxUpdates = [
         ...sharedUpdates,
-        `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`
+        `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`,
     ];
 
     const windowsUpdates = [
         ...sharedUpdates,
-        `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`
+        `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`,
     ];
 
     if (loadJSModule) {
-        res = await axios.get(`https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
-        for ([file, hash] of Object.entries(res.data.hashList)) {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/update.json`, {
+            responseType: 'application/json',
+            headers,
+        });
+        for ([file, hash] of Object.entries(res.hashList)) {
             linuxFiles[file] = `https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/${file}`;
         }
 
-        res = await axios.get(`https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/update.json`, { responseType: 'json', headers });
-        for ([file, hash] of Object.entries(res.data.hashList)) {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/update.json`, {
+            responseType: 'application/json',
+            headers,
+        });
+        for ([file, hash] of Object.entries(res.hashList)) {
             windowsFiles[file] = `https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/${file}`;
         }
 
-        linuxUpdates.push(`https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/update.json`)
+        linuxUpdates.push(`https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/update.json`);
         windowsUpdates.push(`https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/update.json`);
     }
 
     if (loadBytecodeModule) {
-        res = await axios.get(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
-        for ([file, hash] of Object.entries(res.data.hashList)) {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`, {
+            responseType: 'application/json',
+            headers,
+        });
+        for ([file, hash] of Object.entries(res.hashList)) {
             linuxFiles[file] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/${file}`;
         }
 
-        res = await axios.get(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/update.json`, { responseType: 'json', headers });
-        for ([file, hash] of Object.entries(res.data.hashList)) {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/update.json`, {
+            responseType: 'application/json',
+            headers,
+        });
+        for ([file, hash] of Object.entries(res.hashList)) {
             windowsFiles[file] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/${file}`;
         }
 
-        linuxUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`)
+        linuxUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`);
         windowsUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/update.json`);
     }
 
     if (loadCSharpModule) {
-        res = await axios.get(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
-        for ([file, hash] of Object.entries(res.data.hashList)) {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/update.json`, {
+            responseType: 'application/json',
+            headers,
+        });
+        for ([file, hash] of Object.entries(res.hashList)) {
             linuxFiles[file] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/${file}`;
         }
 
-        res = await axios.get(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/update.json`, { responseType: 'json', headers });
-        for ([file, hash] of Object.entries(res.data.hashList)) {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/update.json`, {
+            responseType: 'application/json',
+            headers,
+        });
+        for ([file, hash] of Object.entries(res.hashList)) {
             windowsFiles[file] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/${file}`;
         }
 
@@ -206,13 +257,19 @@ async function start() {
         if (branch != 'dev') {
             console.log(chalk.redBright('===== JS V2 module is only available in dev currently, skipping ====='));
         } else {
-            res = await axios.get(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
-            for ([file, hash] of Object.entries(res.data.hashList)) {
+            res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`, {
+                responseType: 'application/json',
+                headers,
+            });
+            for ([file, hash] of Object.entries(res.hashList)) {
                 linuxFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/${file}`;
             }
 
-            res = await axios.get(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`, { responseType: 'json', headers });
-            for ([file, hash] of Object.entries(res.data.hashList)) {
+            res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`, {
+                responseType: 'application/json',
+                headers,
+            });
+            for ([file, hash] of Object.entries(res.hashList)) {
                 windowsFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/${file}`;
             }
 
@@ -222,13 +279,19 @@ async function start() {
     }
 
     if (loadVoiceServer) {
-        res = await axios.get(`https://${CDN_ADDRESS}/voice-server/${branch}/x64_linux/update.json`, { responseType: 'json', headers });
-        for ([file, hash] of Object.entries(res.data.hashList)) {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/voice-server/${branch}/x64_linux/update.json`, {
+            responseType: 'application/json',
+            headers,
+        });
+        for ([file, hash] of Object.entries(res.hashList)) {
             linuxFiles[file] = `https://${CDN_ADDRESS}/voice-server/${branch}/x64_linux/${file}`;
         }
 
-        res = await axios.get(`https://${CDN_ADDRESS}/voice-server/${branch}/x64_win32/update.json`, { responseType: 'json', headers });
-        for ([file, hash] of Object.entries(res.data.hashList)) {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/voice-server/${branch}/x64_win32/update.json`, {
+            responseType: 'application/json',
+            headers,
+        });
+        for ([file, hash] of Object.entries(res.hashList)) {
             windowsFiles[file] = `https://${CDN_ADDRESS}/voice-server/${branch}/x64_win32/${file}`;
         }
 
@@ -236,9 +299,8 @@ async function start() {
         windowsUpdates.push(`https://${CDN_ADDRESS}/voice-server/${branch}/x64_win32/update.json`);
     }
 
-    const [filesUpdate, filesToUse] = (platform == 'x64_win32')
-        ? [windowsUpdates, windowsFiles]
-        : [linuxUpdates, linuxFiles];
+    const [filesUpdate, filesToUse] =
+        platform == 'x64_win32' ? [windowsUpdates, windowsFiles] : [linuxUpdates, linuxFiles];
 
     if (!fs.existsSync(path.join(rootPath, 'data'))) {
         fs.mkdirSync(path.join(rootPath, 'data'));
@@ -256,32 +318,34 @@ async function start() {
     let anyHashRejected = false;
 
     for (const url of filesUpdate) {
-        const promise = new Promise((resolve, reject) => {
-            axios.get(url, { responseType: 'json', headers }).then(({ data: {
-                hashList
-            } }) => {
-                for (let [file, hash] of Object.entries(hashList)) {
-                    const correctedFileName = correctPathIfNecessary(file);
+        const promise = new Promise(async (resolve, reject) => {
+            /** @type {{ hashList: { [key: string]: string }}} */
+            const data = await fetchJsonData(url, { responseType: 'application/json', headers });
 
-                    if (getLocalFileHash(correctedFileName) === hash) {
-                        console.log(chalk.cyanBright('✓'), chalk.whiteBright(correctedFileName));
-                        continue;
-                    }
+            if (!data) {
+                console.error(chalk.redBright(`Failed to check hash ${url}: ${error}`));
+                reject();
+                return;
+            }
 
-                    console.log(chalk.redBright('x'), chalk.whiteBright(correctedFileName));
+            for (let [file, hash] of Object.entries(data.hashList)) {
+                const correctedFileName = correctPathIfNecessary(file);
 
-                    if (anyHashRejected) return;
-                    filesToDownload[correctedFileName] = filesToUse[file];
+                if (getLocalFileHash(correctedFileName) === hash) {
+                    console.log(chalk.cyanBright('✓'), chalk.whiteBright(correctedFileName));
+                    continue;
                 }
 
-                resolve();
-            }).catch(error => {
-                reject();
+                console.log(chalk.redBright('x'), chalk.whiteBright(correctedFileName));
 
-                if (anyHashRejected) return;
-                anyHashRejected = true;
-                console.error(chalk.redBright(`Failed to check hash ${url}: ${error}`));
-            });
+                if (anyHashRejected) {
+                    return;
+                }
+
+                filesToDownload[correctedFileName] = filesToUse[file];
+            }
+
+            resolve();
         });
 
         promises.push(promise);
@@ -290,8 +354,7 @@ async function start() {
     try {
         await Promise.all(promises);
         console.log(chalk.greenBright('===== File hash check complete ====='));
-    }
-    catch {
+    } catch {
         console.log(chalk.redBright('===== File hash check corrupted -> download all ====='));
         filesToDownload = filesToUse;
     }
@@ -300,23 +363,32 @@ async function start() {
 
     if (Object.keys(filesToDownload).length) {
         promises = [];
-        console.log(chalk.greenBright('===== Download ====='));
+        console.log(chalk.greenBright('===== Downloading ====='));
         for (const [file, url] of Object.entries(filesToDownload)) {
             // Avoid overwriting existing runtimeconfig.json file
-            if (file == "AltV.Net.Host.runtimeconfig.json" && !shouldIncludeRuntimeConfig)
+            if (file == 'AltV.Net.Host.runtimeconfig.json' && !shouldIncludeRuntimeConfig) {
                 continue;
+            }
 
             console.log(chalk.whiteBright(`${file}`));
-            const promise = new Promise((resolve) => {
-                axios.get(url, { responseType: 'arraybuffer', headers }).then(response => {
-                    fs.writeFileSync(path.join(rootPath, file), response.data);
+            const promise = new Promise(async (resolve) => {
+                const response = await fetch(url).catch((err) => {
+                    return undefined;
+                });
+
+                if (!response || !response.ok) {
+                    return resolve();
+                }
+
+                const body = Readable.fromWeb(response.body);
+                const writeStream = fs.createWriteStream(path.join(rootPath, file));
+                body.pipe(writeStream);
+                body.on('close', () => {
                     resolve();
-                }).catch(error => {
-                    console.error(chalk.redBright(`Failed to download ${url}: ${error}`));
-                    if (file.includes('.bin')) {
-                        console.log(`File may only be available in another branch. Can be safely ignored`)
-                    }
-                    resolve();
+                });
+
+                body.on('error', (err) => {
+                    console.log(err);
                 });
             });
 
@@ -363,8 +435,9 @@ function loadRuntimeConfig() {
         const data = fs.readFileSync(`./${RC_FILE_NAME}`, { encoding: 'utf8' });
         const parsedData = JSON.parse(data);
 
-        if (typeof parsedData.loadJSModule !== 'undefined')
+        if (typeof parsedData.loadJSModule !== 'undefined') {
             loadJSModule = !!parsedData.loadJSModule;
+        }
 
         loadBytecodeModule = !!parsedData.loadBytecodeModule;
         loadCSharpModule = !!parsedData.loadCSharpModule;

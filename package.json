@@ -1,15 +1,14 @@
 {
     "name": "altv-pkg",
-    "version": "2.6.1",
+    "version": "2.7.0",
     "description": "Install alt:V Binaries Quickly",
     "main": "bin/index.js",
-    "author": "stuyk",
+    "author": "Stuyk & alt:V Team",
     "license": "ISC",
     "bin": {
         "altv-pkg": "./bin/altv-pkg.js"
     },
     "dependencies": {
-        "axios": "^0.26.1",
         "chalk": "^4.1.0",
         "discord-rpc": "4.0.1"
     },
@@ -21,7 +20,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/Stuyk/altv-pkg.git"
+        "url": "https://github.com/altmp/altv-pkg.git"
     },
     "keywords": [
         "altv",
