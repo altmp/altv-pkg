@@ -115,6 +115,7 @@ async function fetchJsonData(url, headers) {
         throw new Error('Failed to download latest')
     }
 
+    return response.json();
 }
 
 async function start() {
