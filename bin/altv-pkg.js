@@ -54,7 +54,8 @@ async function authorizeCDN(code) {
             responseType: 'application/json',
             headers: { Authorization: code },
         });
-        return res.token;
+
+        return res?.token;
     } catch (e) {
         if (e?.response?.status != 403) throw e;
         throw new Error('You do not have permissions to access this branch');
@@ -111,12 +112,9 @@ async function fetchJsonData(url, headers) {
     });
 
     if (!response || !response.ok) {
-        console.log(chalk.redBright('Failed to download latest '));
-        return undefined;
+        throw new Error('Failed to download latest')
     }
 
-    const res = await response.json();
-    return res;
 }
 
 async function start() {
@@ -163,6 +161,8 @@ async function start() {
         responseType: 'application/json',
         headers,
     });
+
+    if (!res) return;
 
     for ([file, hash] of Object.entries(res.hashList)) {
         linuxFiles[file] = `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/${file}`;
