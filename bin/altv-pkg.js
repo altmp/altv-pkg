@@ -373,7 +373,7 @@ async function start() {
 
             console.log(chalk.whiteBright(`${file}`));
             const promise = new Promise(async (resolve) => {
-                const response = await fetch(url).catch((err) => {
+                const response = await fetch(url, { headers }).catch((err) => {
                     return undefined;
                 });
 
