@@ -255,8 +255,8 @@ async function start() {
     }
 
     if (loadJSV2Module) {
-        if (branch === 'stable') {
-            console.log(chalk.redBright('===== JS V2 module is not available in \'stable\' currently, skipping ====='));
+        if (branch === 'release') {
+            console.log(chalk.redBright('===== JS V2 module is not available in \'release\' currently, skipping ====='));
         } else {
             res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`, {
                 responseType: 'application/json',
