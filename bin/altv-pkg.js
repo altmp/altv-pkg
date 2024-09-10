@@ -255,28 +255,24 @@ async function start() {
     }
 
     if (loadJSV2Module) {
-        if (branch === 'release') {
-            console.log(chalk.redBright('===== JS V2 module is not available in \'release\' currently, skipping ====='));
-        } else {
-            res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`, {
-                responseType: 'application/json',
-                headers,
-            });
-            for ([file, hash] of Object.entries(res.hashList)) {
-                linuxFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/${file}`;
-            }
-
-            res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`, {
-                responseType: 'application/json',
-                headers,
-            });
-            for ([file, hash] of Object.entries(res.hashList)) {
-                windowsFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/${file}`;
-            }
-
-            linuxUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`);
-            windowsUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`);
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`, {
+            responseType: 'application/json',
+             headers,
+        });
+        for ([file, hash] of Object.entries(res.hashList)) {
+            linuxFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/${file}`;
         }
+
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`, {
+            responseType: 'application/json',
+            headers,
+        });
+        for ([file, hash] of Object.entries(res.hashList)) {
+            windowsFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/${file}`;
+        }
+
+        linuxUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`);
+        windowsUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`);
     }
 
     if (loadVoiceServer) {
