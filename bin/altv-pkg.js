@@ -255,11 +255,6 @@ async function start() {
     }
 
     if (loadJSV2Module) {
-        if (branch != 'dev' && branch != 'rc' && !branch.startsWith('qa')) {
-            console.log(chalk.redBright('===== JSv2 module is currently only available in dev and rc, skipping ====='));
-            return;
-        }
-
         res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`, {
             responseType: 'application/json',
             headers,
