@@ -326,20 +326,18 @@ async function start() {
             }
 
             for (let [file, hash] of Object.entries(data.hashList)) {
-                const correctedFileName = correctPathIfNecessary(file);
-
-                if (getLocalFileHash(correctedFileName) === hash) {
-                    console.log(chalk.cyanBright('✓'), chalk.whiteBright(correctedFileName));
+                if (getLocalFileHash(file) === hash) {
+                    console.log(chalk.cyanBright('✓'), chalk.whiteBright(file));
                     continue;
                 }
 
-                console.log(chalk.redBright('x'), chalk.whiteBright(correctedFileName));
+                console.log(chalk.redBright('x'), chalk.whiteBright(file));
 
                 if (anyHashRejected) {
                     return;
                 }
 
-                filesToDownload[correctedFileName] = filesToUse[file];
+                filesToDownload[file] = filesToUse[file];
             }
 
             resolve();
@@ -378,7 +376,11 @@ async function start() {
                 }
 
                 const body = Readable.fromWeb(response.body);
-                const writeStream = fs.createWriteStream(path.join(rootPath, file));
+                
+                const fullPath = path.join(rootPath, file);
+                fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+
+                const writeStream = fs.createWriteStream(fullPath);
                 body.pipe(writeStream);
                 body.on('close', () => {
                     resolve();
@@ -406,18 +408,6 @@ function getLocalFileHash(file) {
         return '_';
     }
     return crypto.createHash('sha1').update(fileBuffer).digest('hex');
-}
-
-// I dont't know why altv-pkg has different file paths than alt:V cdn
-const pathsCorrects = {
-    'modules/js-module/js-module.dll': 'modules/js-module.dll',
-    'modules/js-module/libnode.dll': 'libnode.dll',
-    'modules/js-module/libjs-module.so': 'modules/libjs-module.so',
-    'modules/js-module/libnode.so.108': 'libnode.so.108',
-};
-
-function correctPathIfNecessary(file) {
-    return pathsCorrects[file] ?? file;
 }
 
 function loadRuntimeConfig() {
