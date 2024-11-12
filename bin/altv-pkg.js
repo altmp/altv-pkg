@@ -153,10 +153,7 @@ async function start() {
         sharedFiles[file] = `https://${CDN_ADDRESS}/data/${branch}/${file}`;
     }
 
-    const linuxFiles = {
-        ...sharedFiles,
-        'start.sh': `https://${CDN_ADDRESS}/others/start.sh`,
-    };
+    const linuxFiles = { ...sharedFiles };
 
     res = await fetchJsonData(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`, {
         responseType: 'application/json',
