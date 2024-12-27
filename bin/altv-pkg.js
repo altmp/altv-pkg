@@ -143,6 +143,8 @@ async function start() {
         }
     }
 
+    clearOldModulesStructure();
+
     const sharedFiles = {};
     let res = await fetchJsonData(`https://${CDN_ADDRESS}/data/${branch}/update.json`, {
         responseType: 'application/json',
@@ -311,6 +313,8 @@ async function start() {
     let promises = [];
     let anyHashRejected = false;
 
+    const shouldIncludeRuntimeConfig = !fs.existsSync(path.join(rootPath, 'modules/csharp-module/AltV.Net.Host.runtimeconfig.json')) && loadCSharpModule;
+
     for (const url of filesUpdate) {
         const promise = new Promise(async (resolve, reject) => {
             /** @type {{ hashList: { [key: string]: string }}} */
@@ -323,6 +327,11 @@ async function start() {
             }
 
             for (let [file, hash] of Object.entries(data.hashList)) {
+                // Avoid overwriting existing runtimeconfig.json file
+                if (file == 'modules/csharp-module/AltV.Net.Host.runtimeconfig.json' && !shouldIncludeRuntimeConfig) {
+                    continue;
+                }
+                
                 if (getLocalFileHash(file) === hash) {
                     console.log(chalk.cyanBright('✓'), chalk.whiteBright(file));
                     continue;
@@ -351,14 +360,12 @@ async function start() {
         filesToDownload = filesToUse;
     }
 
-    const shouldIncludeRuntimeConfig = !fs.existsSync('AltV.Net.Host.runtimeconfig.json') && loadCSharpModule;
-
     if (Object.keys(filesToDownload).length) {
         promises = [];
         console.log(chalk.greenBright('===== Downloading ====='));
         for (const [file, url] of Object.entries(filesToDownload)) {
             // Avoid overwriting existing runtimeconfig.json file
-            if (file == 'AltV.Net.Host.runtimeconfig.json' && !shouldIncludeRuntimeConfig) {
+            if (file == 'modules/csharp-module/AltV.Net.Host.runtimeconfig.json' && !shouldIncludeRuntimeConfig) {
                 continue;
             }
 
@@ -373,7 +380,7 @@ async function start() {
                 }
 
                 const body = Readable.fromWeb(response.body);
-                
+
                 const fullPath = path.join(rootPath, file);
                 fs.mkdirSync(path.dirname(fullPath), { recursive: true });
 
@@ -432,6 +439,35 @@ function loadRuntimeConfig() {
     }
 
     return { loadJSModule, loadBytecodeModule, loadCSharpModule, loadJSV2Module, loadVoiceServer };
+}
+
+function clearOldModulesStructure() {
+    const oldModuleFiles = [
+        "AltV.Net.Host.runtimeconfig.json",
+        "AltV.Net.Host.dll",
+        "libnode.so.108",
+        "libnode.dll",
+        "libnodev2.so",
+        "libnodev2.dll",
+        "modules/libnode.so.108",
+        "modules/libnode.dll",
+        "modules/libnodev2.so",
+        "modules/csharp-module.dll",
+        "modules/libcsharp-module.so",
+        "modules/libnodev2.dll",
+        "modules/js-bytecode-module.dll",
+        "modules/libjs-bytecode-module.so",
+        "modules/js-module-v2.dll",
+        "modules/libjs-module-v2.so",
+        "modules/js-module.dll",
+        "modules/libjs-module.so",
+    ];
+
+    oldModuleFiles.forEach(element => {
+        if (fs.existsSync(path.join(rootPath, element))) {
+            fs.unlinkSync(path.join(rootPath, element));
+        }
+    });
 }
 
 start();
