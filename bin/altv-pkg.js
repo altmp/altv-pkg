@@ -78,6 +78,11 @@ for (let i = 0; i < args.length; i++) {
         continue;
     }
 
+    if (args[i].startsWith('ALTV-')) {
+        branch = args[i];
+        continue;
+    }
+
     if (args[i].startsWith('qa')) {
         branch = args[i];
         continue;
