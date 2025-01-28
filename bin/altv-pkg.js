@@ -127,25 +127,11 @@ async function start() {
     console.log(chalk.greenBright('===== altv-pkg ====='));
     console.log(chalk.whiteBright(`System: `), chalk.yellowBright(platform));
     console.log(chalk.whiteBright(`Branch: `), chalk.yellowBright(branch));
-    const isALTV = branch.startsWith('ALTV');
 
     const SERVER_CDN_ADDRESS = CDN_ADDRESS;
     const serverBranch = branch;
 
     let headers = undefined;
-
-    if (isALTV) {
-        console.log(chalk.yellowBright('===== QA branches require additional authorization! ====='));
-
-        try {
-            const code = await authorizeDiscord();
-            const token = await authorizeCDN(code);
-            headers = { 'X-Auth': token };
-        } catch (e) {
-            console.error(chalk.redBright(`Failed to authorize: ${e}`));
-            return;
-        }
-    }
 
     const sharedFiles = {};
     let res = await fetchJsonData(`https://${CDN_ADDRESS}/data/${branch}/update.json`, {
