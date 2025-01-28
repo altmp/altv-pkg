@@ -122,15 +122,14 @@ async function start() {
     console.log(chalk.greenBright('===== altv-pkg ====='));
     console.log(chalk.whiteBright(`System: `), chalk.yellowBright(platform));
     console.log(chalk.whiteBright(`Branch: `), chalk.yellowBright(branch));
-    const isQa = branch.startsWith('qa');
+    const isALTV = branch.startsWith('ALTV');
 
-    const SERVER_CDN_ADDRESS = isQa ? 'qa-cdn.altmp.workers.dev' : CDN_ADDRESS;
+    const SERVER_CDN_ADDRESS = CDN_ADDRESS;
     const serverBranch = branch;
 
     let headers = undefined;
 
-    if (isQa) {
-        branch = 'dev';
+    if (isALTV) {
         console.log(chalk.yellowBright('===== QA branches require additional authorization! ====='));
 
         try {
