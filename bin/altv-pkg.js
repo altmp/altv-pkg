@@ -78,6 +78,11 @@ for (let i = 0; i < args.length; i++) {
         continue;
     }
 
+    if (args[i].startsWith('ALTV-')) {
+        branch = args[i];
+        continue;
+    }
+
     if (args[i].startsWith('qa')) {
         branch = args[i];
         continue;
@@ -122,26 +127,8 @@ async function start() {
     console.log(chalk.greenBright('===== altv-pkg ====='));
     console.log(chalk.whiteBright(`System: `), chalk.yellowBright(platform));
     console.log(chalk.whiteBright(`Branch: `), chalk.yellowBright(branch));
-    const isQa = branch.startsWith('qa');
-
-    const SERVER_CDN_ADDRESS = isQa ? 'qa-cdn.altmp.workers.dev' : CDN_ADDRESS;
-    const serverBranch = branch;
 
     let headers = undefined;
-
-    if (isQa) {
-        branch = 'dev';
-        console.log(chalk.yellowBright('===== QA branches require additional authorization! ====='));
-
-        try {
-            const code = await authorizeDiscord();
-            const token = await authorizeCDN(code);
-            headers = { 'X-Auth': token };
-        } catch (e) {
-            console.error(chalk.redBright(`Failed to authorize: ${e}`));
-            return;
-        }
-    }
 
     const sharedFiles = {};
     let res = await fetchJsonData(`https://${CDN_ADDRESS}/data/${branch}/update.json`, {
@@ -155,7 +142,7 @@ async function start() {
 
     const linuxFiles = { ...sharedFiles };
 
-    res = await fetchJsonData(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`, {
+    res = await fetchJsonData(`https://${CDN_ADDRESS}/server/${branch}/x64_linux/update.json`, {
         responseType: 'application/json',
         headers,
     });
@@ -163,29 +150,29 @@ async function start() {
     if (!res) return;
 
     for ([file, hash] of Object.entries(res.hashList)) {
-        linuxFiles[file] = `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/${file}`;
+        linuxFiles[file] = `https://${CDN_ADDRESS}/server/${branch}/x64_linux/${file}`;
     }
 
     const windowsFiles = { ...sharedFiles };
 
-    res = await fetchJsonData(`https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`, {
+    res = await fetchJsonData(`https://${CDN_ADDRESS}/server/${branch}/x64_win32/update.json`, {
         responseType: 'application/json',
         headers,
     });
     for ([file, hash] of Object.entries(res.hashList)) {
-        windowsFiles[file] = `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/${file}`;
+        windowsFiles[file] = `https://${CDN_ADDRESS}/server/${branch}/x64_win32/${file}`;
     }
 
     const sharedUpdates = [`https://${CDN_ADDRESS}/data/${branch}/update.json`];
 
     const linuxUpdates = [
         ...sharedUpdates,
-        `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_linux/update.json`,
+        `https://${CDN_ADDRESS}/server/${branch}/x64_linux/update.json`,
     ];
 
     const windowsUpdates = [
         ...sharedUpdates,
-        `https://${SERVER_CDN_ADDRESS}/server/${serverBranch}/x64_win32/update.json`,
+        `https://${CDN_ADDRESS}/server/${branch}/x64_win32/update.json`,
     ];
 
     if (loadJSModule) {
