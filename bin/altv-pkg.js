@@ -129,15 +129,16 @@ async function start() {
     console.log(chalk.whiteBright(`Branch: `), chalk.yellowBright(branch));
 
     let headers = undefined;
+    let downloadDataBranch = (branch.startsWith("ALTV-")) ? "dev" : branch;
 
     const sharedFiles = {};
-    let res = await fetchJsonData(`https://${CDN_ADDRESS}/data/${branch}/update.json`, {
+    let res = await fetchJsonData(`https://${CDN_ADDRESS}/data/${downloadDataBranch}/update.json`, {
         responseType: 'application/json',
         headers,
     });
 
     for ([file, hash] of Object.entries(res.hashList)) {
-        sharedFiles[file] = `https://${CDN_ADDRESS}/data/${branch}/${file}`;
+        sharedFiles[file] = `https://${CDN_ADDRESS}/data/${downloadDataBranch}/${file}`;
     }
 
     const linuxFiles = { ...sharedFiles };
@@ -163,7 +164,7 @@ async function start() {
         windowsFiles[file] = `https://${CDN_ADDRESS}/server/${branch}/x64_win32/${file}`;
     }
 
-    const sharedUpdates = [`https://${CDN_ADDRESS}/data/${branch}/update.json`];
+    const sharedUpdates = [`https://${CDN_ADDRESS}/data/${downloadDataBranch}/update.json`];
 
     const linuxUpdates = [
         ...sharedUpdates,
@@ -176,87 +177,87 @@ async function start() {
     ];
 
     if (loadJSModule) {
-        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/update.json`, {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_linux/update.json`, {
             responseType: 'application/json',
             headers,
         });
         for ([file, hash] of Object.entries(res.hashList)) {
-            linuxFiles[file] = `https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/${file}`;
+            linuxFiles[file] = `https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_linux/${file}`;
         }
 
-        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/update.json`, {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_win32/update.json`, {
             responseType: 'application/json',
             headers,
         });
         for ([file, hash] of Object.entries(res.hashList)) {
-            windowsFiles[file] = `https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/${file}`;
+            windowsFiles[file] = `https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_win32/${file}`;
         }
 
-        linuxUpdates.push(`https://${CDN_ADDRESS}/js-module/${branch}/x64_linux/update.json`);
-        windowsUpdates.push(`https://${CDN_ADDRESS}/js-module/${branch}/x64_win32/update.json`);
+        linuxUpdates.push(`https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_linux/update.json`);
+        windowsUpdates.push(`https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_win32/update.json`);
     }
 
     if (loadBytecodeModule) {
-        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`, {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-bytecode-module/${downloadDataBranch}/x64_linux/update.json`, {
             responseType: 'application/json',
             headers,
         });
         for ([file, hash] of Object.entries(res.hashList)) {
-            linuxFiles[file] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/${file}`;
+            linuxFiles[file] = `https://${CDN_ADDRESS}/js-bytecode-module/${downloadDataBranch}/x64_linux/${file}`;
         }
 
-        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/update.json`, {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-bytecode-module/${downloadDataBranch}/x64_win32/update.json`, {
             responseType: 'application/json',
             headers,
         });
         for ([file, hash] of Object.entries(res.hashList)) {
-            windowsFiles[file] = `https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/${file}`;
+            windowsFiles[file] = `https://${CDN_ADDRESS}/js-bytecode-module/${downloadDataBranch}/x64_win32/${file}`;
         }
 
-        linuxUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_linux/update.json`);
-        windowsUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${branch}/x64_win32/update.json`);
+        linuxUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${downloadDataBranch}/x64_linux/update.json`);
+        windowsUpdates.push(`https://${CDN_ADDRESS}/js-bytecode-module/${downloadDataBranch}/x64_win32/update.json`);
     }
 
     if (loadCSharpModule) {
-        res = await fetchJsonData(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/update.json`, {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/coreclr-module/${downloadDataBranch}/x64_linux/update.json`, {
             responseType: 'application/json',
             headers,
         });
         for ([file, hash] of Object.entries(res.hashList)) {
-            linuxFiles[file] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/${file}`;
+            linuxFiles[file] = `https://${CDN_ADDRESS}/coreclr-module/${downloadDataBranch}/x64_linux/${file}`;
         }
 
-        res = await fetchJsonData(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/update.json`, {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/coreclr-module/${downloadDataBranch}/x64_win32/update.json`, {
             responseType: 'application/json',
             headers,
         });
         for ([file, hash] of Object.entries(res.hashList)) {
-            windowsFiles[file] = `https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/${file}`;
+            windowsFiles[file] = `https://${CDN_ADDRESS}/coreclr-module/${downloadDataBranch}/x64_win32/${file}`;
         }
 
-        linuxUpdates.push(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_linux/update.json`);
-        windowsUpdates.push(`https://${CDN_ADDRESS}/coreclr-module/${branch}/x64_win32/update.json`);
+        linuxUpdates.push(`https://${CDN_ADDRESS}/coreclr-module/${downloadDataBranch}/x64_linux/update.json`);
+        windowsUpdates.push(`https://${CDN_ADDRESS}/coreclr-module/${downloadDataBranch}/x64_win32/update.json`);
     }
 
     if (loadJSV2Module) {
-        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`, {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${downloadDataBranch}/x64_linux/update.json`, {
             responseType: 'application/json',
             headers,
         });
         for ([file, hash] of Object.entries(res.hashList)) {
-            linuxFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/${file}`;
+            linuxFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${downloadDataBranch}/x64_linux/${file}`;
         }
 
-        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`, {
+        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module-v2/${downloadDataBranch}/x64_win32/update.json`, {
             responseType: 'application/json',
             headers,
         });
         for ([file, hash] of Object.entries(res.hashList)) {
-            windowsFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/${file}`;
+            windowsFiles[file] = `https://${CDN_ADDRESS}/js-module-v2/${downloadDataBranch}/x64_win32/${file}`;
         }
 
-        linuxUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_linux/update.json`);
-        windowsUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${branch}/x64_win32/update.json`);
+        linuxUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${downloadDataBranch}/x64_linux/update.json`);
+        windowsUpdates.push(`https://${CDN_ADDRESS}/js-module-v2/${downloadDataBranch}/x64_win32/update.json`);
     }
 
     if (loadVoiceServer) {
