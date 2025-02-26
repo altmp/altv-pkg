@@ -128,16 +128,16 @@ async function fetchJsonData(url, headers) {
     return response.json();
 }
 
-async function getFilesFromCDN(url_prefix, branch, platform, file, headers) {
+async function getFilesFromCDN(urlPrefix, branch, platform, file, headers) {
     files = {};
-    str_full_url = `${url_prefix}/${branch}/${platform}/${file}`;
+    str_full_url = `${urlPrefix}/${branch}/${platform}/${file}`;
 
     res = await fetchJsonData(str_full_url, {
         responseType: 'application/json',
         headers,
     });
-    for ([file, hash] of Object.entries(res.hashList)) {
-        files[file] = `${url_prefix}/${branch}/${platform}/${file}`;
+    for ([tmpFile, hash] of Object.entries(res.hashList)) {
+        files[tmpFile] = `${urlPrefix}/${branch}/${platform}/${tmpFile}`;
     }
     return files;
 }
