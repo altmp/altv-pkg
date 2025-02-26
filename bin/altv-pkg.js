@@ -11,6 +11,11 @@ const RC_FILE_NAME = '.altvpkgrc.json';
 const CDN_ADDRESS = 'cdn.alt-mp.com';
 const DISCORD_ID = '580868196270342175';
 
+const ALTV_PREFIX = "ALTV-";
+const BRANCH_RELEASE = "release";
+const BRANCH_RC = "rc";
+const BRANCH_DEV = "dev";
+
 const args = process.argv;
 const rootPath = process.cwd();
 
@@ -63,22 +68,22 @@ async function authorizeCDN(code) {
 }
 
 for (let i = 0; i < args.length; i++) {
-    if (args[i] === 'release') {
-        branch = 'release';
+    if (args[i] === BRANCH_RELEASE) {
+        branch = BRANCH_RELEASE;
         continue;
     }
 
-    if (args[i] === 'rc') {
-        branch = 'rc';
+    if (args[i] === BRANCH_RC) {
+        branch = BRANCH_RC;
         continue;
     }
 
-    if (args[i] === 'dev') {
-        branch = 'dev';
+    if (args[i] === BRANCH_DEV) {
+        branch = BRANCH_DEV;
         continue;
     }
 
-    if (args[i].startsWith('ALTV-')) {
+    if (args[i].startsWith(ALTV_PREFIX)) {
         branch = args[i];
         continue;
     }
@@ -100,7 +105,7 @@ for (let i = 0; i < args.length; i++) {
 }
 
 if (!branch) {
-    branch = 'release';
+    branch = BRANCH_RELEASE;
     console.log(chalk.yellowBright('Branch not specified, using release'));
 }
 
@@ -123,13 +128,27 @@ async function fetchJsonData(url, headers) {
     return response.json();
 }
 
+async function getFilesFromCDN(url_prefix, branch, platform, file, headers) {
+    files = {};
+    str_full_url = `${url_prefix}/${branch}/${platform}/${file}`;
+
+    res = await fetchJsonData(str_full_url, {
+        responseType: 'application/json',
+        headers,
+    });
+    for ([file, hash] of Object.entries(res.hashList)) {
+        files[file] = `${url_prefix}/${branch}/${platform}/${file}`;
+    }
+    return files;
+}
+
 async function start() {
     console.log(chalk.greenBright('===== altv-pkg ====='));
     console.log(chalk.whiteBright(`System: `), chalk.yellowBright(platform));
     console.log(chalk.whiteBright(`Branch: `), chalk.yellowBright(branch));
 
     let headers = undefined;
-    let downloadDataBranch = (branch.startsWith("ALTV-")) ? "dev" : branch;
+    let downloadDataBranch = (branch.startsWith(ALTV_PREFIX)) ? BRANCH_DEV : branch;
 
     const sharedFiles = {};
     let res = await fetchJsonData(`https://${CDN_ADDRESS}/data/${downloadDataBranch}/update.json`, {
@@ -177,24 +196,37 @@ async function start() {
     ];
 
     if (loadJSModule) {
-        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_linux/update.json`, {
-            responseType: 'application/json',
-            headers,
-        });
-        for ([file, hash] of Object.entries(res.hashList)) {
-            linuxFiles[file] = `https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_linux/${file}`;
+        let jsModulesBranch = branch;
+        try
+        {
+            tmpfiles = await getFilesFromCDN(`https://${CDN_ADDRESS}/js-module`, jsModulesBranch, `x64_linux`, `update.json`, headers)
+        } catch (error)
+        {
+            console.log(chalk.yellowBright('Unable to get files from ${branch}.'));
+            console.log(chalk.yellowBright('Will try to use ${downloadDataBranch}...'));
+            jsModulesBranch = downloadDataBranch;
+            tmpfiles = await getFilesFromCDN(`https://${CDN_ADDRESS}/js-module`, jsModulesBranch, 'x64_linux/update.json')
         }
-
-        res = await fetchJsonData(`https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_win32/update.json`, {
-            responseType: 'application/json',
-            headers,
-        });
-        for ([file, hash] of Object.entries(res.hashList)) {
-            windowsFiles[file] = `https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_win32/${file}`;
+        for ([file, hash] of Object.entries(tmpfiles)) {
+            linuxFiles[file] = hash;
         }
-
-        linuxUpdates.push(`https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_linux/update.json`);
-        windowsUpdates.push(`https://${CDN_ADDRESS}/js-module/${downloadDataBranch}/x64_win32/update.json`);
+        linuxUpdates.push(`https://${CDN_ADDRESS}/js-module/${jsModulesBranch}/x64_linux/update.json`);
+        
+        jsModulesBranch = branch;
+        try
+        {
+            tmpfiles = await getFilesFromCDN(`https://${CDN_ADDRESS}/js-module`, jsModulesBranch, `x64_win32`, `update.json`, headers)
+        } catch (error)
+        {
+            console.log(chalk.yellowBright('Unable to get files from ${branch}.'));
+            console.log(chalk.yellowBright('Will try to use ${downloadDataBranch}...'));
+            jsModulesBranch = downloadDataBranch;
+            tmpfiles = await getFilesFromCDN(`https://${CDN_ADDRESS}/js-module`, jsModulesBranch, 'x64_win32/update.json')
+        }
+        for ([file, hash] of Object.entries(tmpfiles)) {
+            windowsFiles[file] = hash;
+        }
+        windowsUpdates.push(`https://${CDN_ADDRESS}/js-module/${jsModulesBranch}/x64_win32/update.json`);
     }
 
     if (loadBytecodeModule) {
