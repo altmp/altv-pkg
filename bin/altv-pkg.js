@@ -130,9 +130,9 @@ async function fetchJsonData(url, headers) {
 
 async function getFilesFromCDN(urlPrefix, branch, platform, file, headers) {
     files = {};
-    str_full_url = `${urlPrefix}/${branch}/${platform}/${file}`;
+    fullUrl = `${urlPrefix}/${branch}/${platform}/${file}`;
 
-    res = await fetchJsonData(str_full_url, {
+    res = await fetchJsonData(fullUrl, {
         responseType: 'application/json',
         headers,
     });
