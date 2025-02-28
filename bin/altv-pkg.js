@@ -205,7 +205,7 @@ async function start() {
             console.log(chalk.yellowBright('Unable to get files from ${branch}.'));
             console.log(chalk.yellowBright('Will try to use ${downloadDataBranch}...'));
             jsModulesBranch = downloadDataBranch;
-            tmpfiles = await getFilesFromCDN(`https://${CDN_ADDRESS}/js-module`, jsModulesBranch, 'x64_linux/update.json')
+            tmpfiles = await getFilesFromCDN(`https://${CDN_ADDRESS}/js-module`, jsModulesBranch, `x64_linux`, `update.json`, headers)
         }
         for ([file, hash] of Object.entries(tmpfiles)) {
             linuxFiles[file] = hash;
@@ -221,7 +221,7 @@ async function start() {
             console.log(chalk.yellowBright('Unable to get files from ${branch}.'));
             console.log(chalk.yellowBright('Will try to use ${downloadDataBranch}...'));
             jsModulesBranch = downloadDataBranch;
-            tmpfiles = await getFilesFromCDN(`https://${CDN_ADDRESS}/js-module`, jsModulesBranch, 'x64_win32/update.json')
+            tmpfiles = await getFilesFromCDN(`https://${CDN_ADDRESS}/js-module`, jsModulesBranch, `x64_win32`, `update.json`, headers)
         }
         for ([file, hash] of Object.entries(tmpfiles)) {
             windowsFiles[file] = hash;
